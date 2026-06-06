@@ -1,3 +1,7 @@
+import { MACTAN_MASSAGE_ITEMS } from "./mactanMassageData";
+
+export { googleMapsQueryUrl, googleMapsSearchUrl } from "./mapCoords";
+
 /** 세부·막탄·세부외곽 가볼 만한 곳 (참고용, 내용은 필요 시 수정) */
 
 export type CebuGuideItem = {
@@ -6,6 +10,8 @@ export type CebuGuideItem = {
   description: string;
   /** Google 지도 앱에서 열 때 검색어(영문·지명 권장) */
   mapsQuery?: string;
+  /** Google 지도 직접 링크(좌표 검색 URL 등). 있으면 mapsQuery보다 우선합니다. */
+  googleMapsUrl?: string;
   /** 마커 팝업 링크가 있으면 Google 지도 대신 이 주소를 사용합니다. */
   mapPopupLink?: { url: string; label: string };
   /** 지도에 표시할 좌표(WGS84). 통합 지도가 있는 지역 탭에서만 사용합니다. */
@@ -33,10 +39,6 @@ export type CebuGuideZoneFlat = {
 };
 
 export type CebuGuideZone = CebuGuideZoneSplit | CebuGuideZoneFlat;
-
-export function googleMapsSearchUrl(query: string): string {
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-}
 
 /** 세부영상 탭 클릭 시 새 창으로 열 네이버 블로그 */
 export const CEBU_VIDEO_BLOG_URL = "https://m.blog.naver.com/aalove0902?tab=2";
@@ -619,6 +621,11 @@ export const CEBU_PLACES_ZONES: CebuGuideZone[] = [
               "막탄 일대 호텔 루프탑·수영장·야경을 즐기려는 분들이 찾는 숙소·바 동선에 넣기 좋습니다. 시설명·층수는 호텔 공지를 확인하세요.",
           },
         ],
+      },
+      {
+        id: "massage",
+        label: "마사지",
+        items: MACTAN_MASSAGE_ITEMS,
       },
       {
         id: "mall",

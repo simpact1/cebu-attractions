@@ -344,6 +344,12 @@ export default function App() {
           margin-bottom: 0.35rem;
           color: #0f172a;
         }
+        .pg-cluster-popup-desc {
+          margin: 0 0 0.5rem;
+          font-size: 0.78rem;
+          line-height: 1.45;
+          color: #334155;
+        }
         .pg-cluster-popup-link {
           font-size: 0.8rem;
           font-weight: 600;
