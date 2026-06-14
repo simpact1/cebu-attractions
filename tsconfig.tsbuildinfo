@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/cebuclustermap.tsx","./src/cebuplacesguide.tsx","./src/cebuplacesdata.ts","./src/main.tsx","./src/vite-env.d.ts"],"version":"5.7.3"}
+{"root":["./src/app.tsx","./src/cebuclustermap.tsx","./src/cebuplacesguide.tsx","./src/guideitemdetail.tsx","./src/cebuplacesdata.ts","./src/kakaosubaction.ts","./src/mactanmassagedata.ts","./src/main.tsx","./src/mapcoords.ts","./src/placeshashdeeplink.ts","./src/reservationactionbuttons.tsx","./src/useplaceinfo.ts","./src/vite-env.d.ts"],"version":"5.7.3"}

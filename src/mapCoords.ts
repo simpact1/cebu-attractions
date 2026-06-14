@@ -3,13 +3,17 @@ export function normalizeCebuLatLng(
   lat: number,
   lng: number,
 ): { lat: number; lng: number } {
-  // 세부·막탄: 위도 ~9–11, 경도 ~123–125
-  const latLooksLikeLng = lat > 50 && lng < 50;
-  const lngLooksLikeLat = lng < 50 && lat > 50;
-  if (latLooksLikeLng || lngLooksLikeLat) {
-    return { lat: lng, lng: lat };
+  const la = Number(lat);
+  const ln = Number(lng);
+  if (!Number.isFinite(la) || !Number.isFinite(ln)) {
+    return { lat: 10.31, lng: 124.01 };
   }
-  return { lat, lng };
+  const latLooksLikeLng = la > 50 && ln < 50;
+  const lngLooksLikeLat = ln < 50 && la > 50;
+  if (latLooksLikeLng || lngLooksLikeLat) {
+    return { lat: ln, lng: la };
+  }
+  return { lat: la, lng: ln };
 }
 
 /** Leaflet / react-leaflet용 [위도, 경도] 튜플 */
@@ -29,13 +33,15 @@ export function parseShopDisplayName(shopName: string): string {
   return shopName.replace(/\s*\([^)]*\)\s*$/, "").trim() || shopName.trim();
 }
 
-/** 매장 상호명 기반 Google Maps 검색 URL (좌표는 선택적 힌트) */
-export function googleMapsSearchUrl(name: string, lat?: number, lng?: number): string {
+/** 매장 상호명 기반 Google Maps 검색 URL (다른 마사지샵과 동일 포맷) */
+export function googleMapsSearchUrl(name: string): string {
   const query = encodeURIComponent(`세부 ${name}`);
-  if (lat != null && lng != null) {
-    return `https://www.google.com/maps/search/?api=1&query=${query}&query_place_id=${lat},${lng}`;
-  }
   return `https://www.google.com/maps/search/?api=1&query=${query}`;
+}
+
+/** Place ID + 검색어 기반 Google Maps URL (장황한 /place/ 파라미터 없음) */
+export function googleMapsPlaceSearchUrl(query: string, placeId: string): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}&query_place_id=${encodeURIComponent(placeId)}`;
 }
 
 /** 완성된 검색어(영문 지명 등)용 — '세부' 접두사 없음 */
@@ -48,9 +54,13 @@ export function markersCenter(
   markers: { lat: number; lng: number }[],
 ): [number, number] {
   if (markers.length === 0) return [10.31, 124.01];
+  const valid = markers.filter(
+    (m) => Number.isFinite(m.lat) && Number.isFinite(m.lng),
+  );
+  if (valid.length === 0) return [10.31, 124.01];
   const { lat, lng } = normalizeCebuLatLng(
-    markers.reduce((sum, m) => sum + m.lat, 0) / markers.length,
-    markers.reduce((sum, m) => sum + m.lng, 0) / markers.length,
+    valid.reduce((sum, m) => sum + m.lat, 0) / valid.length,
+    valid.reduce((sum, m) => sum + m.lng, 0) / valid.length,
   );
   return [lat, lng];
 }

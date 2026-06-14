@@ -1,5 +1,10 @@
 import type { CebuGuideItem } from "./cebuPlacesData";
-import { googleMapsSearchUrl, normalizeCebuLatLng, parseShopDisplayName } from "./mapCoords";
+import {
+  googleMapsPlaceSearchUrl,
+  googleMapsSearchUrl,
+  normalizeCebuLatLng,
+  parseShopDisplayName,
+} from "./mapCoords";
 
 /** 막탄 마사지샵 공통 데이터 규격 */
 export type MactanMassageShop = {
@@ -7,6 +12,8 @@ export type MactanMassageShop = {
   lat: number;
   lng: number;
   desc: string;
+  mapsQuery?: string;
+  placeId?: string;
 };
 
 const MASSAGE_IDS_PART1 = [
@@ -42,6 +49,7 @@ const MASSAGE_IDS_PART2 = [
   "massage-flower-tree",
   "massage-siwon",
   "massage-cebu-spa-in",
+  "massage-shima-spa",
   "massage-the-thai",
   "massage-lara",
   "massage-again",
@@ -85,9 +93,11 @@ export const MACTAN_MASSAGE_SHOPS_PART1: MactanMassageShop[] = [
   },
   {
     name: "쎈스파",
-    lat: 10.307716,
-    lng: 124.009916,
-    desc: "가성비 좋고 시원한 압으로 입소문 난 곳",
+    lat: 10.3075896,
+    lng: 124.0097644,
+    desc: "LG Garden Walk, M.L. Quezon National Highway, Lapu-Lapu 6015 · 가성비 좋고 시원한 압으로 입소문 난 곳",
+    mapsQuery: "쎈스파ssen spa",
+    placeId: "ChIJFfW64qOaqTMR_V5F706Vp1w",
   },
   {
     name: "루가리 마사지",
@@ -238,6 +248,13 @@ export const MACTAN_MASSAGE_SHOPS_PART2: MactanMassageShop[] = [
     desc: "체형과 척추 밸런스에 집중한 전문적인 테라피 샵",
   },
   {
+    name: "시마스파",
+    lat: 10.283865487511157,
+    lng: 123.99485707399901,
+    desc: "마리바고 일대에서 접근하기 좋은 스파",
+    mapsQuery: "시마스파",
+  },
+  {
     name: "더타이",
     lat: 10.283461,
     lng: 123.993757,
@@ -325,17 +342,24 @@ export const MACTAN_MASSAGE_SHOPS: MactanMassageShop[] = [
 const MACTAN_MASSAGE_IDS = [...MASSAGE_IDS_PART1, ...MASSAGE_IDS_PART2];
 
 function toGuideItem(shop: MactanMassageShop, id: string): CebuGuideItem {
-  const { lat, lng } = normalizeCebuLatLng(shop.lat, shop.lng);
-  return {
+  const { lat, lng } = normalizeCebuLatLng(Number(shop.lat), Number(shop.lng));
+  const item: CebuGuideItem & { placeId?: string } = {
     id,
     title: shop.name,
     description: shop.desc,
     mapPin: { lat, lng },
-    googleMapsUrl: googleMapsSearchUrl(parseShopDisplayName(shop.name), lat, lng),
   };
+  if (shop.mapsQuery) item.mapsQuery = shop.mapsQuery;
+  if (shop.placeId) item.placeId = shop.placeId;
+  if (shop.mapsQuery && shop.placeId) {
+    item.googleMapsUrl = googleMapsPlaceSearchUrl(shop.mapsQuery, shop.placeId);
+  } else {
+    item.googleMapsUrl = googleMapsSearchUrl(parseShopDisplayName(shop.name));
+  }
+  return item;
 }
 
-/** 막탄 마사지샵 전체 (42곳) */
+/** 막탄 마사지샵 전체 (43곳) */
 export const MACTAN_MASSAGE_ITEMS: CebuGuideItem[] = MACTAN_MASSAGE_SHOPS.map((shop, i) =>
   toGuideItem(shop, MACTAN_MASSAGE_IDS[i]!),
 );

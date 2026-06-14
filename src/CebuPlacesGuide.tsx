@@ -1,13 +1,14 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CebuClusterMap } from "./CebuClusterMap";
+import { GuideItemDetail } from "./GuideItemDetail";
 import {
   CEBU_PLACES_ZONES,
   CEBU_VIDEO_BLOG_URL,
-  googleMapsQueryUrl,
   selectedGuideItemId,
   sortGuideItemsWithSelectedFirst,
   zoneHasClusterMap,
-  type CebuGuideZone,
+  type CebuGuideItem,
+  type CebuGuideZoneSplit,
 } from "./cebuPlacesData";
 import {
   readPlacesHashFromLocation,
@@ -18,14 +19,43 @@ import {
   writePlacesHashToLocation,
 } from "./placesHashDeepLink";
 
-function zoneById(id: string): CebuGuideZone {
-  const z = CEBU_PLACES_ZONES.find((x) => x.id === id);
-  if (!z) return CEBU_PLACES_ZONES[0]!;
-  return z;
+function activityIcon(id: string): string {
+  const map: Record<string, string> = {
+    kartzone: "🏎️",
+    "cebu-last-day-tour": "🗺️",
+    "cebu-city-tour": "🏛️",
+    "cebu-night-tour": "🌙",
+    "mactan-island-hopping": "🚤",
+    "mactan-diving": "🤿",
+    "mactan-seawalk": "🪸",
+    "mactan-parasailing": "🪂",
+    "mactan-shooting": "🔫",
+  };
+  return map[id] ?? "⭐";
 }
 
-const firstZone = CEBU_PLACES_ZONES[0]!;
-const defaultGroupId = firstZone.kind === "split" ? firstZone.groups[0]!.id : "";
+export { handleKakaoChannelClick, hasReservation, isKakaoChannelUrl } from "./kakaoSubAction";
+export { ReservationActionButtons } from "./reservationActionButtons";
+
+function tourPinsToGuideItems(
+  tourPins: NonNullable<CebuGuideItem["tourPins"]>,
+): CebuGuideItem[] {
+  return tourPins.map((p) => ({
+    id: p.id,
+    title: p.title,
+    description: "",
+    mapPin: { lat: p.lat, lng: p.lng },
+  }));
+}
+
+function zoneById(id: string): CebuGuideZoneSplit {
+  const z = CEBU_PLACES_ZONES.find((x) => x.id === id);
+  if (z?.kind === "split") return z;
+  return CEBU_PLACES_ZONES.find((x) => x.kind === "split")! as CebuGuideZoneSplit;
+}
+
+const firstZone = CEBU_PLACES_ZONES.find((z) => z.kind === "split")! as CebuGuideZoneSplit;
+const defaultGroupId = firstZone.groups[0]!.id;
 const guideInitialState = resolveInitialGuideState(
   CEBU_PLACES_ZONES,
   firstZone.id,
@@ -36,6 +66,7 @@ export function CebuPlacesGuide() {
   const [zoneId, setZoneId] = useState(guideInitialState.zoneId);
   const [groupId, setGroupId] = useState(guideInitialState.groupId);
   const [openKey, setOpenKey] = useState<string | null>(guideInitialState.openKey);
+  const [tourPinOverride, setTourPinOverride] = useState<CebuGuideItem[] | null>(null);
 
   const skipHashSync = useRef(false);
   const historyReady = useRef(false);
@@ -89,7 +120,6 @@ export function CebuPlacesGuide() {
   const zone = useMemo(() => zoneById(zoneId), [zoneId]);
 
   const visibleItems = useMemo(() => {
-    if (zone.kind === "flat") return zone.items;
     const g = zone.groups.find((x) => x.id === groupId) ?? zone.groups[0]!;
     return g.items;
   }, [zone, groupId]);
@@ -104,10 +134,48 @@ export function CebuPlacesGuide() {
     [visibleItems, selectedItemId],
   );
 
-  const clusterMapFocusId = useMemo(
-    () => (zoneHasClusterMap(zone) ? selectedItemId : null),
-    [zone, selectedItemId],
+  const displayItems = useMemo(
+    () => (zone.kind === "split" && groupId === "activities" ? visibleItems : sortedItems),
+    [zone, groupId, visibleItems, sortedItems],
   );
+
+  const mapItems = useMemo(
+    () =>
+      tourPinOverride ??
+      (zone.kind === "split" && groupId === "activities" && !openKey ? [] : visibleItems),
+    [tourPinOverride, zone, groupId, openKey, visibleItems],
+  );
+
+  const openActivityItem = useMemo(() => {
+    if (groupId !== "activities" || !selectedItemId) return null;
+    return visibleItems.find((item) => item.id === selectedItemId) ?? null;
+  }, [groupId, selectedItemId, visibleItems]);
+
+  const clusterMapFocusId = useMemo(() => {
+    if (!zoneHasClusterMap(zone)) return null;
+    if (tourPinOverride) {
+      return tourPinOverride.some((item) => item.id === selectedItemId) ? selectedItemId : null;
+    }
+    return selectedItemId;
+  }, [zone, selectedItemId, tourPinOverride]);
+
+  useEffect(() => {
+    if (groupId !== "activities") return;
+    if (!openKey) {
+      setTourPinOverride(null);
+      return;
+    }
+    const item = visibleItems.find((i) => i.id === selectedItemId);
+    if (!item) {
+      setTourPinOverride(null);
+      return;
+    }
+    if (item.tourPins) {
+      setTourPinOverride(tourPinsToGuideItems(item.tourPins));
+    } else {
+      setTourPinOverride([item]);
+    }
+  }, [groupId, selectedItemId, openKey, visibleItems]);
 
   useEffect(() => {
     const mode = historyReady.current ? "push" : "replace";
@@ -173,24 +241,47 @@ export function CebuPlacesGuide() {
   function selectZone(id: string) {
     setZoneId(id);
     setOpenKey(null);
+    setTourPinOverride(null);
     const z = zoneById(id);
-    if (z.kind === "split") {
-      setGroupId(z.groups[0]!.id);
-    } else {
-      setGroupId("");
-    }
+    setGroupId(z.groups[0]!.id);
   }
 
   function itemOpenKey(itemId: string): string {
-    if (zone.kind === "split") {
-      return `${zone.id}:${groupId}:${itemId}`;
+    return `${zone.id}:${groupId}:${itemId}`;
+  }
+
+  function toggleActivityItem(item: CebuGuideItem) {
+    const key = itemOpenKey(item.id);
+    const opening = openKey !== key;
+    setOpenKey(opening ? key : null);
+    if (opening && item.tourPins) {
+      setTourPinOverride(tourPinsToGuideItems(item.tourPins));
+    } else if (opening) {
+      setTourPinOverride([item]);
+    } else {
+      setTourPinOverride(null);
     }
-    return `${zone.id}:${itemId}`;
+    if (opening) {
+      requestAnimationFrame(() => {
+        document
+          .querySelector(".pg-activity-detail, .pg-cluster-map")
+          ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    }
   }
 
   function toggleItem(itemId: string) {
     const key = itemOpenKey(itemId);
-    setOpenKey((prev) => (prev === key ? null : key));
+    const opening = openKey !== key;
+    setOpenKey(opening ? key : null);
+    if (opening && zoneHasClusterMap(zone) && groupId !== "activities") {
+      requestAnimationFrame(() => {
+        document.querySelector(".pg-cluster-map")?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      });
+    }
   }
 
   function focusItem(itemId: string) {
@@ -229,13 +320,12 @@ export function CebuPlacesGuide() {
         ))}
       </div>
 
-      {zone.kind === "split" && (
-        <div
-          className={`pg-group-row pg-group-row--${zone.id}`}
-          role="tablist"
-          aria-label="카테고리 선택"
-        >
-          {zone.groups.map((g) => (
+      <div
+        className={`pg-group-row pg-group-row--${zone.id}`}
+        role="tablist"
+        aria-label="카테고리 선택"
+      >
+        {zone.groups.map((g) => (
             <button
               key={g.id}
               type="button"
@@ -245,75 +335,67 @@ export function CebuPlacesGuide() {
               onClick={() => {
                 setGroupId(g.id);
                 setOpenKey(null);
+                setTourPinOverride(null);
               }}
             >
               {g.label}
             </button>
           ))}
-        </div>
-      )}
+      </div>
 
-      {zoneHasClusterMap(zone) && (
+      {(zoneHasClusterMap(zone) || groupId === "activities") && (
         <CebuClusterMap
-          mapKey={`${zone.id}-${zone.kind === "split" ? groupId : "all"}`}
-          items={visibleItems}
+          mapKey={`${zone.id}-${groupId}-${openKey ?? "none"}`}
+          items={mapItems}
           focusedItemId={clusterMapFocusId}
           onSelectItem={focusItem}
         />
       )}
 
-      <ul className="pg-list">
-        {sortedItems.map((item) => (
-          <li key={item.id} className="pg-item">
-            <button
-              type="button"
-              className="pg-item-btn"
-              aria-expanded={isOpen(item.id)}
-              onClick={() => toggleItem(item.id)}
-            >
-              <span className="pg-item-title">{item.title}</span>
-              <span className="pg-chev" aria-hidden>
-                {isOpen(item.id) ? "▲" : "▼"}
-              </span>
-            </button>
-            {isOpen(item.id) && (
-              <div className="pg-item-detail">
-                <p className="pg-item-desc">{item.description}</p>
-                {(item.mapPopupLink || item.googleMapsUrl || item.mapsQuery) && (
-                  <p className="pg-item-actions">
-                    {item.mapPopupLink ? (
-                      <a
-                        className="pg-item-link"
-                        href={item.mapPopupLink.url}
-                        target="_self"
-                      >
-                        {item.mapPopupLink.label}
-                      </a>
-                    ) : null}
-                    {item.googleMapsUrl && !item.mapPopupLink ? (
-                      <a
-                        className="pg-item-link"
-                        href={item.googleMapsUrl}
-                        target="_self"
-                      >
-                        Google 지도
-                      </a>
-                    ) : null}
-                    {item.mapsQuery && !item.mapPopupLink && !item.googleMapsUrl ? (
-                      <a
-                        className="pg-item-link"
-                        href={googleMapsQueryUrl(item.mapsQuery)}
-                      >
-                        Google 지도
-                      </a>
-                    ) : null}
-                  </p>
-                )}
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
+      {groupId === "activities" ? (
+        <>
+          <div className="pg-activity-grid">
+            {displayItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`pg-activity-card ${isOpen(item.id) ? "pg-activity-card--open" : ""}`}
+                aria-expanded={isOpen(item.id)}
+                onClick={() => toggleActivityItem(item)}
+              >
+                <span className="pg-activity-icon">{activityIcon(item.id)}</span>
+                <span className="pg-activity-name">{item.title}</span>
+              </button>
+            ))}
+          </div>
+          {openActivityItem ? (
+            <div className="pg-activity-detail">
+              <GuideItemDetail item={openActivityItem} />
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <ul className="pg-list">
+          {sortedItems.map((item) => (
+            <li key={item.id} className="pg-item">
+              <button
+                type="button"
+                className="pg-item-btn"
+                aria-expanded={isOpen(item.id)}
+                onClick={() => toggleItem(item.id)}
+              >
+                <span className="pg-item-title">{item.title}</span>
+                <span className="pg-chev" aria-hidden>
+                  {isOpen(item.id) ? "▲" : "▼"}
+                </span>
+              </button>
+              {isOpen(item.id) && (
+                <GuideItemDetail item={item} />
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
