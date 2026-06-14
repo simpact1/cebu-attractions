@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { CompanyListPanel } from "./CompanyListPanel";
 import type { CebuGuideItem } from "./cebuPlacesData";
 import { handleKakaoChannelClick, hasReservation, isKakaoChannelUrl } from "./kakaoSubAction";
 import { ReservationActionButtons } from "./reservationActionButtons";
-import { googleMapsUrlForPlace, usePlaceInfo } from "./usePlaceInfo";
+import { usePlaceInfo } from "./usePlaceInfo";
 
 type GuideItemDetailProps = {
   item: CebuGuideItem;
@@ -10,12 +11,17 @@ type GuideItemDetailProps = {
 
 export function GuideItemDetail({ item }: GuideItemDetailProps) {
   const [faqOpenId, setFaqOpenId] = useState<string | null>(null);
+  const [showCompanies, setShowCompanies] = useState(false);
+  const [companyOpenId, setCompanyOpenId] = useState<string | null>(null);
   const showReservationButtons = hasReservation(item);
   const fetchPlaceInfo =
-    !item.mapPopupLink && !item.subActions && Boolean(item.mapsQuery);  const { place, loading } = usePlaceInfo(item.mapsQuery, fetchPlaceInfo);
+    !item.mapPopupLink && !item.subActions && Boolean(item.mapsQuery);
+  const { info, loading } = usePlaceInfo(item.mapsQuery, fetchPlaceInfo);
 
   useEffect(() => {
     setFaqOpenId(null);
+    setShowCompanies(false);
+    setCompanyOpenId(null);
   }, [item.id]);
 
   return (
@@ -33,36 +39,60 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
       {showReservationButtons ? (
         <ReservationActionButtons item={item} />
       ) : item.subActions ? (
-        <div className="pg-subaction-grid">
-          {item.subActions.map((action) => {
-            const url = action.url;
-            return url ? (
-              <a
-                key={action.id}
-                href={url}
-                target={isKakaoChannelUrl(url) ? "_blank" : "_self"}
-                rel={isKakaoChannelUrl(url) ? "noopener noreferrer" : undefined}
-                className="pg-subaction-card"
-                onClick={() => {
-                  if (isKakaoChannelUrl(url)) {
-                    handleKakaoChannelClick(url);
+        <>
+          <div className="pg-subaction-grid">
+            {item.subActions.map((action) => {
+              const isCompaniesAction = action.id === "hopping-companies";
+              const isOpen = isCompaniesAction
+                ? showCompanies
+                : false;
+
+              return (
+                <button
+                  key={action.id}
+                  type="button"
+                  className={`pg-subaction-card${isOpen ? " pg-subaction-card--open" : ""}`}
+                  disabled={
+                    !isCompaniesAction && !action.url && !action.description
                   }
-                }}
-              >
-                <span className="pg-subaction-icon">{action.icon}</span>
-                <span className="pg-subaction-label">{action.label}</span>
-              </a>
-            ) : (
-              <button key={action.id} type="button" className="pg-subaction-card" disabled>
-                <span className="pg-subaction-icon">{action.icon}</span>
-                <span className="pg-subaction-label">{action.label}</span>
-              </button>
-            );
-          })}
-        </div>
+                  onClick={() => {
+                    if (isCompaniesAction) {
+                      if (showCompanies) {
+                        setCompanyOpenId(null);
+                        setShowCompanies(false);
+                      } else {
+                        setShowCompanies(true);
+                      }
+                      return;
+                    }
+                    if (action.description) {
+                      return;
+                    }
+                    if (action.url) {
+                      if (isKakaoChannelUrl(action.url)) {
+                        handleKakaoChannelClick(action.url);
+                      }
+                      window.open(action.url, "_blank");
+                    }
+                  }}
+                >
+                  <span className="pg-subaction-icon">{action.icon}</span>
+                  <span className="pg-subaction-label">{action.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          <CompanyListPanel
+            item={item}
+            showCompanies={showCompanies}
+            companyOpenId={companyOpenId}
+            onCompanyOpenIdChange={setCompanyOpenId}
+          />
+        </>
       ) : null}
 
-      {item.faqItems ? (        <div className="pg-faq-section">
+      {item.faqItems ? (
+        <div className="pg-faq-section">
           <div className="pg-faq-header">
             <span>💬 자주 묻는 질문</span>
           </div>
@@ -97,23 +127,23 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
         <div className="pg-place-info">
           {loading ? (
             <p className="pg-place-info-loading muted">정보 불러오는 중...</p>
-          ) : place ? (
+          ) : info ? (
             <>
-              {place.rating != null ? (
+              {info.rating != null ? (
                 <p className="pg-place-info-rating">
-                  <span aria-hidden>⭐</span> {place.rating.toFixed(1)}
-                  {place.userRatingsTotal != null ? (
+                  <span aria-hidden>⭐</span> {info.rating.toFixed(1)}
+                  {info.userRatingCount != null ? (
                     <span className="pg-place-info-reviews">
                       {" "}
-                      · 리뷰 {place.userRatingsTotal.toLocaleString()}개
+                      · 리뷰 {info.userRatingCount.toLocaleString()}개
                     </span>
                   ) : null}
                 </p>
               ) : null}
-              {place.address ? <p className="pg-place-info-address">{place.address}</p> : null}
-              {place.openingHours && place.openingHours.length > 0 ? (
+              {info.address ? <p className="pg-place-info-address">{info.address}</p> : null}
+              {info.weekdayDescriptions && info.weekdayDescriptions.length > 0 ? (
                 <ul className="pg-place-info-hours">
-                  {place.openingHours.map((line) => (
+                  {info.weekdayDescriptions.map((line) => (
                     <li key={line}>{line}</li>
                   ))}
                 </ul>
@@ -124,7 +154,10 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
             <p className="pg-item-actions">
               <a
                 className="pg-item-link pg-place-google-link"
-                href={googleMapsUrlForPlace(item.mapsQuery, place)}
+                href={
+                  item.googleMapsUrl ??
+                  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapsQuery)}`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
               >

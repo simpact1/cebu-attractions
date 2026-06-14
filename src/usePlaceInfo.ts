@@ -1,145 +1,91 @@
 import { useEffect, useState } from "react";
-import type { PlaceInfo } from "./cebuPlacesData";
-import { googleMapsPlaceSearchUrl, googleMapsQueryUrl } from "./mapCoords";
 
-const CACHE_PREFIX = "cebu-place-info:v1:";
-
-type PlacesApiPlace = {
-  id?: string;
-  displayName?: { text?: string };
-  formattedAddress?: string;
+export type PlaceInfo = {
+  name?: string;
+  address?: string;
   rating?: number;
   userRatingCount?: number;
-  currentOpeningHours?: { weekdayDescriptions?: string[] };
+  isOpenNow?: boolean;
+  weekdayDescriptions?: string[];
+  priceLevel?: string;
+  businessStatus?: string;
 };
 
-type UsePlaceInfoResult = {
-  place: PlaceInfo | null;
-  loading: boolean;
-  error: string | null;
+const PRICE_LEVEL_MAP: Record<string, string> = {
+  PRICE_LEVEL_FREE: "무료",
+  PRICE_LEVEL_INEXPENSIVE: "₱",
+  PRICE_LEVEL_MODERATE: "₱₱",
+  PRICE_LEVEL_EXPENSIVE: "₱₱₱",
+  PRICE_LEVEL_VERY_EXPENSIVE: "₱₱₱₱",
 };
 
-function cacheKey(query: string): string {
-  return `${CACHE_PREFIX}${query}`;
-}
-
-function readCache(query: string): PlaceInfo | null {
-  try {
-    const raw = sessionStorage.getItem(cacheKey(query));
-    if (!raw) return null;
-    return JSON.parse(raw) as PlaceInfo;
-  } catch {
-    return null;
-  }
-}
-
-function writeCache(query: string, place: PlaceInfo): void {
-  try {
-    sessionStorage.setItem(cacheKey(query), JSON.stringify(place));
-  } catch {
-    /* quota / private mode */
-  }
-}
-
-function parsePlaceId(resourceId?: string): string | undefined {
-  if (!resourceId) return undefined;
-  const slash = resourceId.lastIndexOf("/");
-  return slash >= 0 ? resourceId.slice(slash + 1) : resourceId;
-}
-
-function toPlaceInfo(raw: PlacesApiPlace): PlaceInfo | null {
-  const name = raw.displayName?.text?.trim();
-  const address = raw.formattedAddress?.trim();
-  if (!name && !address) return null;
-
-  return {
-    name: name || address || "",
-    address: address || "",
-    rating: typeof raw.rating === "number" ? raw.rating : undefined,
-    userRatingsTotal: typeof raw.userRatingCount === "number" ? raw.userRatingCount : undefined,
-    openingHours: raw.currentOpeningHours?.weekdayDescriptions,
-    placeId: parsePlaceId(raw.id),
-  };
-}
-
-async function fetchPlaceInfo(mapsQuery: string): Promise<PlaceInfo | null> {
-  const cached = readCache(mapsQuery);
-  if (cached) return cached;
-
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  if (!apiKey) return null;
-
-  const res = await fetch("https://places.googleapis.com/v1/places:searchText", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Goog-Api-Key": apiKey,
-      "X-Goog-FieldMask":
-        "places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.currentOpeningHours",
-    },
-    body: JSON.stringify({ textQuery: mapsQuery }),
-  });
-
-  if (!res.ok) {
-    throw new Error(`Places API ${res.status}`);
-  }
-
-  const data = (await res.json()) as { places?: PlacesApiPlace[] };
-  const place = data.places?.[0] ? toPlaceInfo(data.places[0]) : null;
-  if (place) writeCache(mapsQuery, place);
-  return place;
-}
-
-export function googleMapsUrlForPlace(mapsQuery: string, place?: PlaceInfo | null): string {
-  if (place?.placeId) {
-    return googleMapsPlaceSearchUrl(mapsQuery, place.placeId);
-  }
-  return googleMapsQueryUrl(mapsQuery);
-}
-
-export function usePlaceInfo(mapsQuery: string | undefined, enabled: boolean): UsePlaceInfoResult {
-  const [place, setPlace] = useState<PlaceInfo | null>(null);
+export function usePlaceInfo(query: string | undefined, enabled: boolean) {
+  const [info, setInfo] = useState<PlaceInfo | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!enabled || !mapsQuery) {
-      setPlace(null);
+    if (!enabled || !query) {
+      setInfo(null);
       setLoading(false);
-      setError(null);
       return;
     }
 
-    const cached = readCache(mapsQuery);
-    if (cached) {
-      setPlace(cached);
-      setLoading(false);
-      setError(null);
-      return;
-    }
+    const cacheKey = `place-info:${query}`;
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        const parsed = JSON.parse(cached) as PlaceInfo;
+        console.log("Places API cache hit:", query, parsed);
+        setInfo(parsed);
+        setLoading(false);
+        return;
+      }
+    } catch {}
 
-    let cancelled = false;
     setLoading(true);
-    setError(null);
-    setPlace(null);
+    setInfo(null);
 
-    fetchPlaceInfo(mapsQuery)
-      .then((result) => {
-        if (cancelled) return;
-        setPlace(result);
+    fetch(`/api/places?query=${encodeURIComponent(query)}`)
+      .then((r) => {
+        console.log("Places API status:", r.status, "query:", query);
+        return r.json();
       })
-      .catch(() => {
-        if (cancelled) return;
-        setPlace(null);
+      .then((data) => {
+        console.log("Places API response:", data);
+        if (data?.error) {
+          console.error("Places API error response:", data.error);
+          return;
+        }
+        const place = data?.places?.[0];
+        if (!place) {
+          console.log("No place found for query:", query);
+          return;
+        }
+
+        const result: PlaceInfo = {
+          name: place.displayName?.text,
+          address: place.formattedAddress,
+          rating: place.rating,
+          userRatingCount: place.userRatingCount,
+          isOpenNow: place.currentOpeningHours?.openNow,
+          weekdayDescriptions:
+            place.currentOpeningHours?.weekdayDescriptions ??
+            place.regularOpeningHours?.weekdayDescriptions,
+          priceLevel: place.priceLevel
+            ? (PRICE_LEVEL_MAP[place.priceLevel] ?? place.priceLevel)
+            : undefined,
+          businessStatus: place.businessStatus,
+        };
+
+        try {
+          sessionStorage.setItem(cacheKey, JSON.stringify(result));
+        } catch {}
+
+        setInfo(result);
       })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+      .catch((err) => console.error("Places API error:", err))
+      .finally(() => setLoading(false));
+  }, [query, enabled]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [mapsQuery, enabled]);
-
-  return { place, loading, error };
+  return { info, loading };
 }

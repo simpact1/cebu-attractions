@@ -13,6 +13,94 @@ export default function App() {
       <main className="grid">
         <CebuPlacesGuide />
       </main>
+      <nav
+        aria-label="세부 여행 앱 바로가기"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4,1fr)",
+          background: "rgba(4,47,46,0.97)",
+          borderTop: "1px solid rgba(255,255,255,0.12)",
+          padding: "10px 0 max(10px, env(safe-area-inset-bottom))",
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          maxWidth: "430px",
+          margin: "0 auto",
+          width: "100%",
+        }}
+      >
+        {[
+          {
+            href: "https://cebu-planner-weather.vercel.app",
+            bg: "linear-gradient(135deg,#32D4A4,#0EA5E9)",
+            icon: "🌤️",
+            label: "날씨",
+          },
+          {
+            href: "https://cebu-accommodation-guide.vercel.app",
+            bg: "linear-gradient(135deg,#007AFF,#5AC8FA)",
+            icon: "🏨",
+            label: "숙소",
+          },
+          {
+            href: "https://cebu-traffic-master.vercel.app",
+            bg: "linear-gradient(135deg,#F59E0B,#F97316)",
+            icon: "🚗",
+            label: "교통",
+          },
+          {
+            href: "https://cebu-exchange-rate.vercel.app",
+            bg: "linear-gradient(135deg,#10B981,#059669)",
+            icon: "💱",
+            label: "환율",
+          },
+        ].map((item, i, arr) => (
+          <a
+            key={item.href}
+            href={item.href}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "6px",
+              padding: "8px 4px",
+              textDecoration: "none",
+              borderRight: i < arr.length - 1 ? "1px solid rgba(255,255,255,0.12)" : "none",
+              WebkitTapHighlightColor: "transparent",
+              outline: "none",
+            }}
+          >
+            <span
+              style={{
+                width: "52px",
+                height: "52px",
+                borderRadius: "50%",
+                background: item.bg,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "26px",
+                flexShrink: 0,
+              }}
+            >
+              {item.icon}
+            </span>
+            <span
+              style={{
+                fontSize: "12px",
+                fontWeight: 700,
+                color: "#fff",
+                textAlign: "center",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {item.label}
+            </span>
+          </a>
+        ))}
+      </nav>
       <style>{`
         .app {
           width: 100%;
@@ -21,7 +109,7 @@ export default function App() {
           margin: 0 auto;
           padding: 1.25rem max(0.75rem, env(safe-area-inset-left)) 3rem
             max(0.75rem, env(safe-area-inset-right));
-          padding-bottom: max(3rem, env(safe-area-inset-bottom));
+          padding-bottom: max(7rem, calc(4rem + env(safe-area-inset-bottom)));
           overflow-wrap: anywhere;
           word-break: break-word;
         }
@@ -249,6 +337,211 @@ export default function App() {
           outline: 2px solid #a5f3fc;
           outline-offset: 2px;
         }
+        .mf-wrap {
+          margin: 0.65rem 0 0.75rem;
+          padding: 0.75rem 0.65rem;
+          border-radius: 0.75rem;
+          background: rgba(0, 0, 0, 0.18);
+          border: 1px solid rgba(165, 243, 252, 0.18);
+        }
+        .mg-quick-links {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.5rem;
+          margin-bottom: 0.75rem;
+          width: 100%;
+        }
+        .mg-quick-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.55rem;
+          padding: 1.4rem 0.3rem;
+          border-radius: 0.75rem;
+          border: 1.5px solid rgba(255, 255, 255, 0.12);
+          background: rgba(0, 0, 0, 0.22);
+          color: #ecfeff;
+          text-decoration: none;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          min-width: 0;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        .mg-quick-card:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(165, 243, 252, 0.35);
+        }
+        .mg-quick-icon {
+          font-size: clamp(2rem, 7vw, 2.8rem);
+          line-height: 1;
+        }
+        .mg-quick-label {
+          font-size: clamp(0.72rem, 2.2vw, 0.88rem);
+          font-weight: 700;
+          text-align: center;
+          line-height: 1.35;
+          white-space: pre-line;
+          word-break: keep-all;
+          width: 100%;
+        }
+        .mf-section {
+          margin-bottom: 0.65rem;
+        }
+        .mf-section:last-child {
+          margin-bottom: 0;
+        }
+        .mf-label {
+          display: block;
+          margin-bottom: 0.45rem;
+          font-size: 0.76rem;
+          font-weight: 700;
+          color: rgba(165, 243, 252, 0.9);
+        }
+        .mf-chips {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+        }
+        .mf-chip {
+          padding: 0.38rem 0.62rem;
+          border-radius: 999px;
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          background: rgba(0, 0, 0, 0.22);
+          color: #ecfeff;
+          font: inherit;
+          font-size: 0.74rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          white-space: nowrap;
+        }
+        .mf-chip--off:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(165, 243, 252, 0.35);
+        }
+        .mf-chip--on {
+          background: rgba(56, 189, 248, 0.22);
+          border-color: rgba(125, 211, 252, 0.75);
+          color: #f0f9ff;
+        }
+        .mg-badges {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+          padding: 0.3rem 0.65rem 0.4rem;
+        }
+        .mg-place-info {
+          padding: 0 0.65rem 0.5rem;
+        }
+        .mg-place-loading {
+          font-size: 0.75rem;
+          color: var(--text-muted);
+          margin: 0 0 0.5rem;
+        }
+        .mg-place-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+          margin-bottom: 0.5rem;
+        }
+        .mg-place-chip {
+          font-size: 0.75rem;
+          font-weight: 600;
+          padding: 0.25rem 0.55rem;
+          border-radius: 0.4rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
+        .mg-place-sub {
+          font-weight: 400;
+          font-size: 0.7rem;
+          opacity: 0.85;
+        }
+        .mg-place-chip--rating {
+          background: rgba(251, 191, 36, 0.2);
+          color: #fde68a;
+          border: 1px solid rgba(251, 191, 36, 0.35);
+        }
+        .mg-place-chip--price {
+          background: rgba(52, 211, 153, 0.15);
+          color: #6ee7b7;
+          border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+        .mg-place-chip--hours {
+          background: rgba(56, 189, 248, 0.15);
+          color: #bae6fd;
+          border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        .mg-place-chip--open {
+          background: rgba(52, 211, 153, 0.15);
+          color: #6ee7b7;
+          border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+        .mg-place-chip--closed {
+          background: rgba(239, 68, 68, 0.15);
+          color: #fca5a5;
+          border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .mg-place-hours {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 0.5rem;
+          padding: 0.5rem 0.65rem;
+          margin-bottom: 0.5rem;
+        }
+        .mg-place-hours-title {
+          margin: 0 0 0.3rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: rgba(165, 243, 252, 0.9);
+        }
+        .mg-place-hours-row {
+          margin: 0;
+          font-size: 0.72rem;
+          color: rgba(165, 243, 252, 0.75);
+          line-height: 1.6;
+        }
+        .mg-badge {
+          font-size: 0.68rem;
+          font-weight: 600;
+          padding: 0.18rem 0.5rem;
+          border-radius: 0.35rem;
+          line-height: 1.4;
+        }
+        .mg-badge--premium {
+          background: rgba(245, 158, 11, 0.25);
+          color: #fde68a;
+          border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+        .mg-badge--budget {
+          background: rgba(56, 189, 248, 0.2);
+          color: #bae6fd;
+          border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+        .mg-badge--zone {
+          background: rgba(52, 211, 153, 0.15);
+          color: #6ee7b7;
+          border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+        .mg-badge--recommend {
+          background: rgba(167, 139, 250, 0.2);
+          color: #c4b5fd;
+          border: 1px solid rgba(167, 139, 250, 0.35);
+        }
+        .pg-massage-empty {
+          padding: 1rem 0.65rem;
+          text-align: center;
+          list-style: none;
+        }
+        .pg-massage-selected {
+          margin: 0.65rem 0 0;
+          border-radius: 0.55rem;
+          background: rgba(0, 0, 0, 0.22);
+          border: 1px solid rgba(125, 211, 252, 0.45);
+          overflow: hidden;
+        }
         .pg-list {
           list-style: none;
           margin: 0;
@@ -389,6 +682,7 @@ export default function App() {
           border: 1px solid rgba(255, 255, 255, 0.15);
           background: rgba(0, 0, 0, 0.2);
           color: #a5f3fc;
+          font: inherit;
           text-decoration: none;
           cursor: pointer;
           transition: all 0.15s ease;
@@ -403,6 +697,160 @@ export default function App() {
         .pg-subaction-card:disabled {
           opacity: 0.45;
           cursor: not-allowed;
+        }
+        .pg-subaction-card--open {
+          border-color: rgba(165, 243, 252, 0.6);
+          background: rgba(165, 243, 252, 0.1);
+        }
+        .pg-subaction-detail {
+          margin: 0 0.65rem 0.65rem;
+          padding: 0.85rem 1rem;
+          border-radius: 0.65rem;
+          background: rgba(0, 0, 0, 0.25);
+          border: 1px solid rgba(165, 243, 252, 0.25);
+        }
+        .pg-subaction-detail-text {
+          margin: 0 0 0.75rem;
+          font-size: 0.82rem;
+          line-height: 1.7;
+          color: rgba(165, 243, 252, 0.95);
+          white-space: pre-line;
+        }
+        .pg-subaction-detail-btn {
+          display: block;
+          text-align: center;
+          padding: 0.65rem;
+          border-radius: 0.55rem;
+          background: #f5d600;
+          color: #3a1d1d;
+          font-size: 0.88rem;
+          font-weight: 700;
+          text-decoration: none;
+        }
+        .pg-subaction-detail-btn:hover {
+          background: #ecc900;
+        }
+        .pg-company-section {
+          padding: 0 0.65rem 0.65rem;
+          border-top: 2px solid rgba(165, 243, 252, 0.2);
+          margin-top: 0.5rem;
+          padding-top: 0.75rem;
+        }
+        .pg-company-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.5rem;
+          margin-bottom: 0.5rem;
+          width: 100%;
+        }
+        .pg-company-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 1.2rem 0.25rem;
+          border-radius: 0.65rem;
+          border: 1.5px solid rgba(255, 255, 255, 0.12);
+          background: rgba(0, 0, 0, 0.22);
+          color: #ecfeff;
+          font: inherit;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
+        }
+        .pg-company-card:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(165, 243, 252, 0.35);
+        }
+        .pg-company-card--open {
+          background: rgba(4, 120, 87, 0.35);
+          border-color: rgba(110, 231, 183, 0.8);
+        }
+        .pg-company-icon {
+          font-size: clamp(2rem, 7vw, 2.8rem);
+          line-height: 1;
+        }
+        .pg-company-label {
+          font-size: clamp(0.72rem, 2.2vw, 0.88rem);
+          font-weight: 700;
+          text-align: center;
+          line-height: 1.35;
+          word-break: keep-all;
+          width: 100%;
+        }
+        .pg-company-detail {
+          margin-top: 0.6rem;
+          padding: 0.85rem 1rem;
+          border-radius: 0.65rem;
+          background: rgba(0, 0, 0, 0.25);
+          border: 1px solid rgba(165, 243, 252, 0.25);
+        }
+        .pg-company-detail-header {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-bottom: 0.6rem;
+        }
+        .pg-company-detail-icon {
+          font-size: 1.4rem;
+          line-height: 1;
+        }
+        .pg-company-detail-name {
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: #ecfeff;
+        }
+        .pg-company-desc {
+          margin: 0 0 0.5rem;
+          font-size: 0.8rem;
+          line-height: 1.7;
+          color: rgba(165, 243, 252, 0.95);
+          white-space: pre-line;
+        }
+        .pg-company-recommend {
+          margin: 0 0 0.65rem;
+          font-size: 0.78rem;
+          color: #fef9c3;
+          font-weight: 600;
+        }
+        .pg-company-btn-row {
+          display: flex;
+          gap: 0.5rem;
+          width: 100%;
+        }
+        .pg-company-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 0.85rem 0.5rem;
+          border-radius: 0.55rem;
+          font-size: clamp(0.85rem, 2.5vw, 1rem);
+          font-weight: 700;
+          text-decoration: none;
+          transition: all 0.15s ease;
+          flex: 1;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        .pg-company-btn--kakao {
+          background: #e5c800;
+          color: #3a1d1d;
+        }
+        .pg-company-btn--kakao:hover {
+          background: #d4b800;
+        }
+        .pg-company-btn--reserve {
+          background: rgba(56, 189, 248, 0.25);
+          border: 1.5px solid rgba(56, 189, 248, 0.5);
+          color: #e0f2fe;
+        }
+        .pg-company-btn--reserve:hover {
+          background: rgba(56, 189, 248, 0.38);
+          border-color: rgba(56, 189, 248, 0.7);
         }
         .pg-subaction-icon {
           font-size: clamp(1.9rem, 6vw, 2.6rem);
@@ -453,6 +901,15 @@ export default function App() {
         .pg-action-btn--kakao:hover {
           background: #ecc900;
           border-color: #ecc900;
+        }
+        .pg-action-btn--reserve {
+          background: rgba(13, 148, 136, 0.35);
+          border: 1.5px solid rgba(45, 212, 191, 0.6);
+          color: #ccfbf1;
+        }
+        .pg-action-btn--reserve:hover {
+          background: rgba(13, 148, 136, 0.55);
+          border-color: rgba(45, 212, 191, 0.85);
         }
         .pg-faq-header {
           padding: 0.65rem 0.65rem 0.4rem;

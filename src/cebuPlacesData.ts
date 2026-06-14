@@ -1,4 +1,5 @@
 import { MACTAN_MASSAGE_ITEMS } from "./mactanMassageData";
+import type { MassageQuality, MassageRecommend, MassageZone } from "./massageFilters";
  
 export { googleMapsQueryUrl, googleMapsSearchUrl } from "./mapCoords";
  
@@ -13,6 +14,7 @@ export type CebuGuideItem = {
   mapsQuery?: string;
   googleMapsUrl?: string;
   mapPopupLink?: { url: string; label: string };
+  reservationUrl?: string;
   mapPin?: { lat: number; lng: number };
   address?: string;
   rating?: string;       // 예: "⭐ 4.3"
@@ -23,8 +25,20 @@ export type CebuGuideItem = {
     icon: string;
     label: string;
     url?: string;
+    description?: string;
+  }[];
+  companyList?: {
+    id: string;
+    icon: string;
+    label: string;
+    url: string;
+    description: string;
+    recommend: string;
   }[];
   faqItems?: { id: string; question: string; answer: string }[];
+  quality?: MassageQuality;
+  zones?: MassageZone[];
+  recommends?: MassageRecommend[];
 };
 
 /** Google Places API (New) Text Search 결과 */
@@ -621,16 +635,72 @@ const MACTAN_ACTIVITIES: CebuGuideItem[] = [
         url: "https://m.blog.naver.com/aalove0902/220397286614",
       },
       {
-        id: "hopping-company",
+        id: "hopping-company-guide",
         icon: "🚢",
         label: "호핑업체\n선택방법",
         url: "https://m.blog.naver.com/aalove0902/224242513073",
       },
       {
-        id: "hopping-reservation",
-        icon: "📅",
-        label: "호핑예약",
+        id: "hopping-companies",
+        icon: "📋",
+        label: "세부호핑\n업체모음",
         url: "",
+      },
+    ],
+    companyList: [
+      {
+        id: "company-우리",
+        icon: "🏆",
+        label: "단독호핑",
+        url: "https://myrealt.rip/blirf7",
+        description:
+          "세부여행플래너 단독호핑\n⭐ 마이리얼트립 우수업체 선정\n🎯 프라이빗 단독 투어\n✅ 한국인 직영 운영\n💬 카톡 1:1 밀착 케어",
+        recommend: "👨‍👩‍👧 가족·신혼·프라이빗 원하는 분",
+      },
+      {
+        id: "company-hanbada",
+        icon: "🚢",
+        label: "한바다호핑",
+        url: "https://myrealt.rip/bljY03",
+        description:
+          "리얼후기 No.1\n🚤 초특급 요트형 방카\n🎿 제트스키 무료 포함\n✅ 현장 추가비용 없음",
+        recommend: "💰 가성비 + 프리미엄 둘 다 원하는 분",
+      },
+      {
+        id: "company-gold",
+        icon: "🥇",
+        label: "골드호핑",
+        url: "https://myrealt.rip/bljNba",
+        description:
+          "만족도 No.1\n🎷 색소폰·DJ 선상 공연\n🚤 초대형 45인승 방카\n🎉 럼콕파티·워터파티 포함",
+        recommend: "🎉 신나는 분위기 원하는 분",
+      },
+      {
+        id: "company-club",
+        icon: "🎉",
+        label: "클럽세부",
+        url: "https://myrealt.rip/blkE2c",
+        description:
+          "SNS 입소문 1위\n🎵 선상 클럽 파티\n🔁 재방문율 최고\n💃 MZ세대 강력 추천",
+        recommend: "🕺 파티·선상클럽 원하는 MZ세대",
+      },
+      {
+        id: "company-themark",
+        icon: "🛥️",
+        label: "더마크요트",
+        url: "https://myrealt.rip/blk9ee",
+        description:
+          "프리미엄 요트 투어\n🛁 자쿠지 보유\n🍖 점심 포함\n🎿 제트스키 무료 탑승",
+        recommend: "✨ 프리미엄·특별한 날 원하는 분",
+      },
+      {
+        id: "company-pirate",
+        icon: "🏴‍☠️",
+        label: "해적호핑",
+        url: "https://myrealt.rip/blk2ff",
+        description:
+          "단독호핑 강자\n🏴‍☠️ 해적 콘셉트 투어\n🎣 낚시·선상라면 포함\n👨‍👩‍👧 가족·커플 특화",
+        recommend: "👨‍👩‍👧 가족·커플·콘셉트 투어 원하는 분",
       },
     ],
     faqItems: [
@@ -861,6 +931,86 @@ const MACTAN_ACTIVITIES: CebuGuideItem[] = [
  
 const OUTSKIRTS_SIGHTS: CebuGuideItem[] = [
   {
+    id: "moalboal-turtle-sardines",
+    title: "(모알보알) 바다거북·정어리 떼 스노클링",
+    mapsQuery: "Panagsama Beach sardine run sea turtles Moalboal",
+    mapPin: { lat: 9.944, lng: 123.3839 },
+    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/222827690573", label: "자세히 보기" },
+    description:
+      "모알보알 파나그사마 비치 앞바다는 세부 스노클링 명소 중 단연 손꼽히는 곳입니다. 수백만 마리의 정어리 떼와 야생 바다거북을 해변 바로 앞에서 스노클링으로 만날 수 있습니다. 세부에서 당일 모알보알 투어로 이용하거나 현지 숙박 후 방문하는 것이 일반적입니다.",
+  },
+  {
+    id: "moalboal-white-beach",
+    title: "(모알보알) 화이트 비치",
+    mapsQuery: "Basdaku White Beach Moalboal Cebu",
+    mapPin: { lat: 9.9856, lng: 123.3843 },
+    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223070023937", label: "자세히 보기" },
+    description:
+      "바스다쿠(화이트 비치)로 불리는 모알보알 대표 백사장입니다. 세부 남부 해변 여행지로 인기 있으며, 해변을 따라 숙소·식당이 늘어서 있어 1박 이상 머물기 좋습니다.",
+  },
+  {
+    id: "mantayupan-falls",
+    title: "(모알보알) 만타유판 폭포",
+    mapsQuery: "Mantayupan Falls Barili Cebu",
+    mapPin: { lat: 10.1009, lng: 123.5358 },
+    description:
+      "바릴리에 있는 세부 외곽 폭포 트래킹 명소입니다. 높은 낙폭으로 알려져 있으며, 모알보알에서 북쪽으로 이어 붙이는 일정이 많습니다.",
+  },
+  {
+    id: "moalboal-day-tour",
+    title: "(모알보알) 당일 투어",
+    mapsQuery: "Moalboal day tour Cebu snorkeling canyoneering",
+    mapPin: { lat: 9.944, lng: 123.3839 },
+    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/222827690573", label: "자세히 보기" },
+    description:
+      "세부에서 출발하는 모알보알 당일 투어 패키지입니다. 정어리 떼 스노클링·바다거북 만나기·가와산 캐녀닝·화이트 비치를 하루에 즐길 수 있습니다. 클룩이나 현지 투어사를 통해 예약하면 픽업·드롭 서비스가 포함됩니다.",
+  },
+  {
+    id: "moalboal-canyoneering",
+    title: "(모알보알) 캐녀닝",
+    mapsQuery: "Kawasan Falls canyoneering Badian Cebu",
+    mapPin: { lat: 9.802, lng: 123.374 },
+    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223731391176", label: "자세히 보기" },
+    description:
+      "세부 캐녀닝은 바디안 가와산 계곡에서 즐기는 세부 최고 인기 액티비티 중 하나입니다. 계곡 트래킹·다이빙·클리프 점프·튜빙을 하며 가와산 폭포까지 내려오는 코스로, 스릴과 자연을 동시에 경험할 수 있습니다. 모알보알 숙소 또는 세부 시티에서 당일 투어로 이용 가능합니다. 안전·장비·폐쇄 구간은 현지 통제를 확인하세요.",
+  },
+  {
+    id: "moalboal-aguinid-falls",
+    title: "(모알보알) 아귀니드 폭포 트래킹",
+    mapsQuery: "Aguinid Falls Samboan Cebu",
+    mapPin: { lat: 9.5066, lng: 123.3022 },
+    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223185814212", label: "자세히 보기" },
+    description:
+      "삼보안의 단계식 폭포를 오르는 세부 트래킹 액티비티입니다. 총 7단계의 폭포를 암벽 타기·로프 등반으로 오르는 이색 체험으로, 세부 여행 중 도전적인 액티비티를 원하는 분께 추천합니다. 가이드 동반 필수이며 현장 안내를 따르세요.",
+  },
+  {
+    id: "moalboal-dao-falls",
+    title: "(모알보알) 다오 폭포 트래킹",
+    mapsQuery: "Dao Falls Samboan Cebu",
+    mapPin: { lat: 9.5433, lng: 123.3168 },
+    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/222886304001", label: "자세히 보기" },
+    description:
+      "삼보안에 있는 세부 폭포 트래킹 명소입니다. 아귀니드 폭포와 같은 날 동선으로 묶는 경우가 많으며, 세부 자연 액티비티를 좋아하는 여행자에게 추천합니다.",
+  },
+  {
+    id: "oslob-whale-shark",
+    title: "(오슬롭) 고래상어 투어",
+    mapsQuery: "Oslob whale shark watching Tan-awan Cebu",
+    mapPin: { lat: 9.4621, lng: 123.3786 },
+    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223103304119", label: "자세히 보기" },
+    description:
+      "세부 오슬롭 고래상어 투어는 세부 여행 버킷리스트 1순위입니다. 탄아완 해변에서 새벽부터 진행되며, 세계 최대 어류인 고래상어를 바로 눈앞에서 만날 수 있습니다. 세부에서 출발 시 새벽 3~4시 출발이 일반적이며, 수밀론 섬·투말록 폭포와 함께 패키지로 이용하면 편리합니다. 규제·시간대·거리 유지 등 지침은 수시로 바뀌므로 현지 안내를 따르세요.",
+  },
+  {
+    id: "oslob-day-tour",
+    title: "(오슬롭) 남부 일일 투어",
+    mapsQuery: "Oslob day tour Cebu whale shark Sumilon Tumalog",
+    mapPin: { lat: 9.4621, lng: 123.3786 },
+    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223103304119", label: "자세히 보기" },
+    description:
+      "세부에서 가장 인기 있는 당일 투어 코스입니다. 고래상어 수영 → 투말록 폭포 → 수밀론 아일랜드 스노클링을 하루에 즐기는 세부 남부 패키지로, 클룩·현지 투어사를 통해 예약할 수 있습니다. 새벽 출발이므로 전날 충분한 수면을 권장합니다.",
+  },
+  {
     id: "oslob-sumilon",
     title: "(오슬롭) 수밀론 아일랜드",
     mapsQuery: "Sumilon Island Oslob Cebu",
@@ -897,13 +1047,36 @@ const OUTSKIRTS_SIGHTS: CebuGuideItem[] = [
       "알코이에 있는 세부 남부 백사장 해변입니다. 세부 오슬롭·남부 일일 코스에 자주 포함되는 숨겨진 해변 명소로, 간조·만조에 따라 모래톱 넓이가 달라집니다.",
   },
   {
-    id: "moalboal-white-beach",
-    title: "(모알보알) 화이트 비치",
-    mapsQuery: "Basdaku White Beach Moalboal Cebu",
-    mapPin: { lat: 9.9856, lng: 123.3843 },
-    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223070023937", label: "자세히 보기" },
+    id: "camotes-tour",
+    title: "(카모테스) 섬 투어",
+    mapsQuery: "Camotes Island tour Cebu ferry Danao",
+    mapPin: { lat: 10.65, lng: 124.36 },
     description:
-      "바스다쿠(화이트 비치)로 불리는 모알보알 대표 백사장입니다. 세부 남부 해변 여행지로 인기 있으며, 해변을 따라 숙소·식당이 늘어서 있어 1박 이상 머물기 좋습니다.",
+      "세부 다나오항에서 페리로 약 2시간 거리의 카모테스 섬 투어입니다. 어메이징 케이브·티무보 케이브·산티아고 베이·다나오 레이크 등 자연 명소를 하루에 돌아볼 수 있습니다. 세부 외곽 섬 여행지 중 비교적 저렴하게 즐길 수 있어 인기 있습니다.",
+  },
+  {
+    id: "camotes-amazing-cave",
+    title: "(카모테스) 어메이징 케이브",
+    mapsQuery: "Amazing Cave Camotes Island Cebu",
+    mapPin: { lat: 10.598, lng: 124.365 },
+    description:
+      "카모테스 섬의 종유동·지하 호수 관광지입니다. 세부 외곽 자연 탐험 코스로, 보트·동선은 현지 투어 안내를 따르세요.",
+  },
+  {
+    id: "camotes-timubo-cave",
+    title: "(카모테스) 티무보 케이브",
+    mapsQuery: "Timubo Cave San Francisco Camotes Cebu",
+    mapPin: { lat: 10.6986, lng: 124.3377 },
+    description:
+      "카모테스 산프란시스코의 천연 동굴입니다. 수영 가능한 천연 동굴 풀로 유명하며, 세부 이색 액티비티 명소 중 하나입니다. 개방 시간·요금은 현장 기준을 확인하세요.",
+  },
+  {
+    id: "camotes-buho-rock",
+    title: "(카모테스) 부호락 클리프 다이빙",
+    mapsQuery: "Buho Rock Tudela Camotes Cebu",
+    mapPin: { lat: 10.6285, lng: 124.4013 },
+    description:
+      "카모테스 튜델라의 바위 절벽·클리프 다이빙 포인트입니다. 스릴을 즐기는 세부 여행자에게 인기 있는 이색 액티비티 명소입니다. 안전 펜스·입장 규정을 지키고 수영 실력에 맞게 이용하세요.",
   },
   {
     id: "camotes-mangodlong-rock-beach",
@@ -949,107 +1122,9 @@ const OUTSKIRTS_SIGHTS: CebuGuideItem[] = [
  
 const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
   {
-    id: "oslob-whale-shark",
-    title: "(오슬롭 투어) 고래상어 투어",
-    mapsQuery: "Oslob whale shark watching Tan-awan Cebu",
-    mapPin: { lat: 9.4621, lng: 123.3786 },
-    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223103304119", label: "자세히 보기" },
-    description:
-      "세부 오슬롭 고래상어 투어는 세부 여행 버킷리스트 1순위입니다. 탄아완 해변에서 새벽부터 진행되며, 세계 최대 어류인 고래상어를 바로 눈앞에서 만날 수 있습니다. 세부에서 출발 시 새벽 3~4시 출발이 일반적이며, 수밀론 섬·투말록 폭포와 함께 패키지로 이용하면 편리합니다. 규제·시간대·거리 유지 등 지침은 수시로 바뀌므로 현지 안내를 따르세요.",
-  },
-  {
-    id: "oslob-day-tour",
-    title: "(오슬롭 투어) 오슬롭 남부 일일 투어",
-    mapsQuery: "Oslob day tour Cebu whale shark Sumilon Tumalog",
-    mapPin: { lat: 9.4621, lng: 123.3786 },
-    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223103304119", label: "자세히 보기" },
-    description:
-      "세부에서 가장 인기 있는 당일 투어 코스입니다. 고래상어 수영 → 투말록 폭포 → 수밀론 아일랜드 스노클링을 하루에 즐기는 세부 남부 패키지로, 클룩·현지 투어사를 통해 예약할 수 있습니다. 새벽 출발이므로 전날 충분한 수면을 권장합니다.",
-  },
-  {
-    id: "moalboal-canyoneering",
-    title: "(모알보알 투어) 캐녀닝",
-    mapsQuery: "Kawasan Falls canyoneering Badian Cebu",
-    mapPin: { lat: 9.802, lng: 123.374 },
-    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223731391176", label: "자세히 보기" },
-    description:
-      "세부 캐녀닝은 바디안 가와산 계곡에서 즐기는 세부 최고 인기 액티비티 중 하나입니다. 계곡 트래킹·다이빙·클리프 점프·튜빙을 하며 가와산 폭포까지 내려오는 코스로, 스릴과 자연을 동시에 경험할 수 있습니다. 모알보알 숙소 또는 세부 시티에서 당일 투어로 이용 가능합니다. 안전·장비·폐쇄 구간은 현지 통제를 확인하세요.",
-  },
-  {
-    id: "moalboal-turtle-sardines",
-    title: "(모알보알 투어) 바다거북·정어리 떼 스노클링",
-    mapsQuery: "Panagsama Beach sardine run sea turtles Moalboal",
-    mapPin: { lat: 9.944, lng: 123.3839 },
-    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/222827690573", label: "자세히 보기" },
-    description:
-      "모알보알 파나그사마 비치 앞바다는 세부 스노클링 명소 중 단연 손꼽히는 곳입니다. 수백만 마리의 정어리 떼와 야생 바다거북을 해변 바로 앞에서 스노클링으로 만날 수 있습니다. 세부에서 당일 모알보알 투어로 이용하거나 현지 숙박 후 방문하는 것이 일반적입니다.",
-  },
-  {
-    id: "moalboal-aguinid-falls",
-    title: "(모알보알 투어) 아귀니드 폭포 트래킹",
-    mapsQuery: "Aguinid Falls Samboan Cebu",
-    mapPin: { lat: 9.5066, lng: 123.3022 },
-    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223185814212", label: "자세히 보기" },
-    description:
-      "삼보안의 단계식 폭포를 오르는 세부 트래킹 액티비티입니다. 총 7단계의 폭포를 암벽 타기·로프 등반으로 오르는 이색 체험으로, 세부 여행 중 도전적인 액티비티를 원하는 분께 추천합니다. 가이드 동반 필수이며 현장 안내를 따르세요.",
-  },
-  {
-    id: "moalboal-dao-falls",
-    title: "(모알보알 투어) 다오 폭포 트래킹",
-    mapsQuery: "Dao Falls Samboan Cebu",
-    mapPin: { lat: 9.5433, lng: 123.3168 },
-    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/222886304001", label: "자세히 보기" },
-    description:
-      "삼보안에 있는 세부 폭포 트래킹 명소입니다. 아귀니드 폭포와 같은 날 동선으로 묶는 경우가 많으며, 세부 자연 액티비티를 좋아하는 여행자에게 추천합니다.",
-  },
-  {
-    id: "moalboal-day-tour",
-    title: "(모알보알 투어) 모알보알 당일 투어",
-    mapsQuery: "Moalboal day tour Cebu snorkeling canyoneering",
-    mapPin: { lat: 9.944, lng: 123.3839 },
-    mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/222827690573", label: "자세히 보기" },
-    description:
-      "세부에서 출발하는 모알보알 당일 투어 패키지입니다. 정어리 떼 스노클링·바다거북 만나기·가와산 캐녀닝·화이트 비치를 하루에 즐길 수 있습니다. 클룩이나 현지 투어사를 통해 예약하면 픽업·드롭 서비스가 포함됩니다.",
-  },
-  {
-    id: "camotes-tour",
-    title: "(카모테스 투어) 카모테스 섬 투어",
-    mapsQuery: "Camotes Island tour Cebu ferry Danao",
-    mapPin: { lat: 10.65, lng: 124.36 },
-    description:
-      "세부 다나오항에서 페리로 약 2시간 거리의 카모테스 섬 투어입니다. 어메이징 케이브·티무보 케이브·산티아고 베이·다나오 레이크 등 자연 명소를 하루에 돌아볼 수 있습니다. 세부 외곽 섬 여행지 중 비교적 저렴하게 즐길 수 있어 인기 있습니다.",
-  },
-  {
-    id: "camotes-amazing-cave",
-    title: "(카모테스) 어메이징 케이브",
-    mapsQuery: "Amazing Cave Camotes Island Cebu",
-    mapPin: { lat: 10.598, lng: 124.365 },
-    description:
-      "카모테스 섬의 종유동·지하 호수 관광지입니다. 세부 외곽 자연 탐험 코스로, 보트·동선은 현지 투어 안내를 따르세요.",
-  },
-  {
-    id: "camotes-timubo-cave",
-    title: "(카모테스) 티무보 케이브",
-    mapsQuery: "Timubo Cave San Francisco Camotes Cebu",
-    mapPin: { lat: 10.6986, lng: 124.3377 },
-    description:
-      "카모테스 산프란시스코의 천연 동굴입니다. 수영 가능한 천연 동굴 풀로 유명하며, 세부 이색 액티비티 명소 중 하나입니다. 개방 시간·요금은 현장 기준을 확인하세요.",
-  },
-  {
-    id: "camotes-buho-rock",
-    title: "(카모테스) 부호락 클리프 다이빙",
-    mapsQuery: "Buho Rock Tudela Camotes Cebu",
-    mapPin: { lat: 10.6285, lng: 124.4013 },
-    description:
-      "카모테스 튜델라의 바위 절벽·클리프 다이빙 포인트입니다. 스릴을 즐기는 세부 여행자에게 인기 있는 이색 액티비티 명소입니다. 안전 펜스·입장 규정을 지키고 수영 실력에 맞게 이용하세요.",
-  },
-  {
-    id: "mantayupan-falls",
-    title: "(세부외곽) 만타유판 폭포",
-    mapsQuery: "Mantayupan Falls Barili Cebu",
-    mapPin: { lat: 10.1009, lng: 123.5358 },
-    description:
-      "바릴리에 있는 세부 외곽 폭포 트래킹 명소입니다. 높은 낙폭으로 알려져 있으며, 모알보알에서 북쪽으로 이어 붙이는 일정이 많습니다.",
+    id: "outskirts-activities-coming-soon",
+    title: "준비 중입니다",
+    description: "세부 외곽 액티비티 정보를 준비 중입니다. 곧 업데이트될 예정입니다.",
   },
 ];
  

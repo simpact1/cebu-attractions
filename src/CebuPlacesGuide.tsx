@@ -1,6 +1,9 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CebuClusterMap } from "./CebuClusterMap";
 import { GuideItemDetail } from "./GuideItemDetail";
+import { MassageFilterBar } from "./MassageFilterBar";
+import { MACTAN_MASSAGE_SHOPS } from "./mactanMassageData";
+import type { MassageFilterState } from "./massageFilters";
 import {
   CEBU_PLACES_ZONES,
   CEBU_VIDEO_BLOG_URL,
@@ -36,6 +39,99 @@ function activityIcon(id: string): string {
 
 export { handleKakaoChannelClick, hasReservation, isKakaoChannelUrl } from "./kakaoSubAction";
 export { ReservationActionButtons } from "./reservationActionButtons";
+export { CompanyListPanel } from "./CompanyListPanel";
+export { MassageFilterBar } from "./MassageFilterBar";
+export {
+  EMPTY_MASSAGE_FILTER,
+  matchesMassageFilter,
+  type MassageFilterState,
+} from "./massageFilters";
+
+function findMassageShopForItem(item: CebuGuideItem) {
+  return MACTAN_MASSAGE_SHOPS.find((shop) =>
+    item.title.includes(shop.name.split("(")[0].trim()),
+  );
+}
+
+function MassageShopBadges({ item }: { item: CebuGuideItem }) {
+  const shop = findMassageShopForItem(item);
+  if (!shop) return null;
+  return (
+    <div className="mg-badges">
+      {shop.quality ? (
+        <span
+          className={`mg-badge ${shop.quality === "고급" ? "mg-badge--premium" : "mg-badge--budget"}`}
+        >
+          {shop.quality}
+        </span>
+      ) : null}
+      {shop.zones?.map((z) => (
+        <span key={z} className="mg-badge mg-badge--zone">
+          {z}
+        </span>
+      ))}
+      {shop.recommends?.map((r) => (
+        <span key={r} className="mg-badge mg-badge--recommend">
+          {r}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function MassageItemDetail({ item }: { item: CebuGuideItem }) {
+  const isKakao = item.reservationUrl?.includes("kakao.com");
+
+  return (
+    <div className="pg-item-detail">
+      <p className="pg-item-desc">{item.description}</p>
+      <div className="mg-place-info">
+        <div className="mg-place-row">
+          {item.rating ? (
+            <span className="mg-place-chip mg-place-chip--rating">{item.rating}</span>
+          ) : null}
+          {item.openingHours ? (
+            <span className="mg-place-chip mg-place-chip--hours">
+              🕐 {item.openingHours}
+            </span>
+          ) : null}
+        </div>
+      </div>
+      {(item.googleMapsUrl || item.mapPopupLink || item.reservationUrl) && (
+        <div className="pg-action-buttons">
+          {item.googleMapsUrl ? (
+            <a
+              href={item.googleMapsUrl}
+              target="_self"
+              className="pg-action-btn pg-action-btn--detail"
+            >
+              📍 Google 지도
+            </a>
+          ) : null}
+          {item.mapPopupLink ? (
+            <a
+              href={item.mapPopupLink.url}
+              target="_self"
+              className="pg-action-btn pg-action-btn--detail"
+            >
+              📋 {item.mapPopupLink.label}
+            </a>
+          ) : null}
+          {item.reservationUrl ? (
+            <a
+              href={item.reservationUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`pg-action-btn ${isKakao ? "pg-action-btn--kakao" : "pg-action-btn--reserve"}`}
+            >
+              📋 예약하기
+            </a>
+          ) : null}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function tourPinsToGuideItems(
   tourPins: NonNullable<CebuGuideItem["tourPins"]>,
@@ -67,10 +163,16 @@ export function CebuPlacesGuide() {
   const [groupId, setGroupId] = useState(guideInitialState.groupId);
   const [openKey, setOpenKey] = useState<string | null>(guideInitialState.openKey);
   const [tourPinOverride, setTourPinOverride] = useState<CebuGuideItem[] | null>(null);
+  const [massageFilters, setMassageFilters] = useState<MassageFilterState>({
+    quality: null,
+    zone: null,
+    recommend: null,
+  });
 
   const skipHashSync = useRef(false);
   const historyReady = useRef(false);
   const scrollRestorePending = useRef(readPersistedScrollY());
+  const clusterMapRef = useRef<HTMLDivElement>(null);
 
   const persistState = useCallback(
     (next: { zoneId: string; groupId: string; openKey: string | null }) => {
@@ -119,10 +221,12 @@ export function CebuPlacesGuide() {
 
   const zone = useMemo(() => zoneById(zoneId), [zoneId]);
 
-  const visibleItems = useMemo(() => {
+  const groupItems = useMemo(() => {
     const g = zone.groups.find((x) => x.id === groupId) ?? zone.groups[0]!;
     return g.items;
   }, [zone, groupId]);
+
+  const visibleItems = groupItems;
 
   const selectedItemId = useMemo(
     () => selectedGuideItemId(openKey, zone, groupId),
@@ -134,6 +238,30 @@ export function CebuPlacesGuide() {
     [visibleItems, selectedItemId],
   );
 
+  const filteredMassageItems = useMemo(() => {
+    if (groupId !== "massage") return sortedItems;
+    return sortedItems.filter((item) => {
+      const shop = findMassageShopForItem(item);
+      if (!shop) return true;
+      if (massageFilters.quality && shop.quality !== massageFilters.quality) return false;
+      if (massageFilters.zone && !shop.zones?.includes(massageFilters.zone)) return false;
+      if (massageFilters.recommend && !shop.recommends?.includes(massageFilters.recommend)) {
+        return false;
+      }
+      return true;
+    });
+  }, [sortedItems, groupId, massageFilters]);
+
+  const listItems = groupId === "massage" ? filteredMassageItems : sortedItems;
+
+  const selectedMassageItem = useMemo(() => {
+    if (groupId !== "massage" || !openKey) return null;
+    const match = (item: CebuGuideItem) => `${zone.id}:${groupId}:${item.id}` === openKey;
+    return (
+      filteredMassageItems.find(match) ?? sortedItems.find(match) ?? null
+    );
+  }, [groupId, openKey, filteredMassageItems, sortedItems, zone.id]);
+
   const displayItems = useMemo(
     () => (zone.kind === "split" && groupId === "activities" ? visibleItems : sortedItems),
     [zone, groupId, visibleItems, sortedItems],
@@ -142,8 +270,12 @@ export function CebuPlacesGuide() {
   const mapItems = useMemo(
     () =>
       tourPinOverride ??
-      (zone.kind === "split" && groupId === "activities" && !openKey ? [] : visibleItems),
-    [tourPinOverride, zone, groupId, openKey, visibleItems],
+      (zone.kind === "split" && groupId === "activities" && !openKey
+        ? []
+        : groupId === "massage"
+          ? filteredMassageItems
+          : visibleItems),
+    [tourPinOverride, zone, groupId, openKey, visibleItems, filteredMassageItems],
   );
 
   const openActivityItem = useMemo(() => {
@@ -158,6 +290,19 @@ export function CebuPlacesGuide() {
     }
     return selectedItemId;
   }, [zone, selectedItemId, tourPinOverride]);
+
+  useEffect(() => {
+    if (groupId !== "massage") {
+      setMassageFilters({ quality: null, zone: null, recommend: null });
+    }
+  }, [groupId]);
+
+  useEffect(() => {
+    if (groupId !== "massage" || !selectedItemId) return;
+    if (!filteredMassageItems.some((item) => item.id === selectedItemId)) {
+      setOpenKey(null);
+    }
+  }, [groupId, selectedItemId, filteredMassageItems]);
 
   useEffect(() => {
     if (groupId !== "activities") return;
@@ -286,6 +431,17 @@ export function CebuPlacesGuide() {
 
   function focusItem(itemId: string) {
     setOpenKey(itemOpenKey(itemId));
+
+    requestAnimationFrame(() => {
+      if (clusterMapRef.current) {
+        const mapBottom = clusterMapRef.current.getBoundingClientRect().bottom;
+        const scrollY = window.scrollY + mapBottom - window.innerHeight * 0.35;
+        window.scrollTo({
+          top: scrollY,
+          behavior: "smooth",
+        });
+      }
+    });
   }
 
   function isOpen(itemId: string): boolean {
@@ -343,13 +499,44 @@ export function CebuPlacesGuide() {
           ))}
       </div>
 
+      {groupId === "massage" && (
+        <div className="mg-quick-links">
+          <a
+            href="https://m.blog.naver.com/aalove0902/221178736479"
+            target="_self"
+            className="mg-quick-card"
+          >
+            <span className="mg-quick-icon">💆</span>
+            <span className="mg-quick-label">마사지{"\n"}알쓸신잡</span>
+          </a>
+          <a
+            href="https://m.blog.naver.com/aalove0902/223259081998"
+            target="_self"
+            className="mg-quick-card"
+          >
+            <span className="mg-quick-icon">💡</span>
+            <span className="mg-quick-label">알면{"\n"}좋은정보</span>
+          </a>
+          <a
+            href="https://m.blog.naver.com/aalove0902/220767139543"
+            target="_self"
+            className="mg-quick-card"
+          >
+            <span className="mg-quick-icon">🏨</span>
+            <span className="mg-quick-label">주요{"\n"}리조트스파</span>
+          </a>
+        </div>
+      )}
+
       {(zoneHasClusterMap(zone) || groupId === "activities") && (
-        <CebuClusterMap
-          mapKey={`${zone.id}-${groupId}-${openKey ?? "none"}`}
-          items={mapItems}
-          focusedItemId={clusterMapFocusId}
-          onSelectItem={focusItem}
-        />
+        <div ref={clusterMapRef} className="pg-cluster-map">
+          <CebuClusterMap
+            mapKey={`${zone.id}-${groupId}-${openKey ?? "none"}-${massageFilters.quality ?? ""}-${massageFilters.zone ?? ""}-${massageFilters.recommend ?? ""}`}
+            items={mapItems}
+            focusedItemId={clusterMapFocusId}
+            onSelectItem={focusItem}
+          />
+        </div>
       )}
 
       {groupId === "activities" ? (
@@ -374,9 +561,51 @@ export function CebuPlacesGuide() {
             </div>
           ) : null}
         </>
+      ) : groupId === "massage" ? (
+        <>
+          {selectedMassageItem ? (
+            <div className="pg-massage-selected">
+              <button
+                type="button"
+                className="pg-item-btn"
+                aria-expanded
+                onClick={() => toggleItem(selectedMassageItem.id)}
+              >
+                <span className="pg-item-title">{selectedMassageItem.title}</span>
+                <span className="pg-chev" aria-hidden>
+                  ▲
+                </span>
+              </button>
+              <MassageShopBadges item={selectedMassageItem} />
+              <MassageItemDetail item={selectedMassageItem} />
+            </div>
+          ) : null}
+          <MassageFilterBar filters={massageFilters} onChange={setMassageFilters} />
+          <ul className="pg-list">
+            {listItems.length === 0 ? (
+              <li className="pg-massage-empty muted">조건에 맞는 마사지샵이 없습니다.</li>
+            ) : null}
+            {listItems.map((item) => (
+              <li key={item.id} className="pg-item">
+                <button
+                  type="button"
+                  className="pg-item-btn"
+                  aria-expanded={isOpen(item.id)}
+                  onClick={() => toggleItem(item.id)}
+                >
+                  <span className="pg-item-title">{item.title}</span>
+                  <span className="pg-chev" aria-hidden>
+                    {isOpen(item.id) ? "▲" : "▼"}
+                  </span>
+                </button>
+                <MassageShopBadges item={item} />
+              </li>
+            ))}
+          </ul>
+        </>
       ) : (
         <ul className="pg-list">
-          {sortedItems.map((item) => (
+          {listItems.map((item) => (
             <li key={item.id} className="pg-item">
               <button
                 type="button"
@@ -389,9 +618,7 @@ export function CebuPlacesGuide() {
                   {isOpen(item.id) ? "▲" : "▼"}
                 </span>
               </button>
-              {isOpen(item.id) && (
-                <GuideItemDetail item={item} />
-              )}
+              {isOpen(item.id) && <GuideItemDetail item={item} />}
             </li>
           ))}
         </ul>
