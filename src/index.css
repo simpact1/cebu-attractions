@@ -42,3 +42,15 @@ button {
   font: inherit;
   cursor: pointer;
 }
+
+.pg-subaction-card--kakao {
+  background-color: #FEE500 !important;
+  color: #3C1E1E !important;
+}
+.pg-subaction-card--kakao .pg-subaction-label {
+  color: #3C1E1E !important;
+}
+.pg-subaction-card--kakao .pg-subaction-icon svg {
+  display: block;
+  margin: 0 auto;
+}

@@ -13,7 +13,9 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
   const [faqOpenId, setFaqOpenId] = useState<string | null>(null);
   const [showCompanies, setShowCompanies] = useState(false);
   const [companyOpenId, setCompanyOpenId] = useState<string | null>(null);
-  const showReservationButtons = hasReservation(item);
+  const showReservationButtons =
+    hasReservation(item) &&
+    !item.subActions?.some((action) => !action.id.endsWith("-reservation"));
   const fetchPlaceInfo =
     !item.mapPopupLink && !item.subActions && Boolean(item.mapsQuery);
   const { info, loading } = usePlaceInfo(item.mapsQuery, fetchPlaceInfo);
@@ -43,7 +45,32 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
           <div className="pg-subaction-grid">
             {item.subActions.map((action) => {
               const isCompaniesAction = action.id === "hopping-companies";
+              const isKakaoInquiry = action.id === "city-tour-inquiry";
               const isOpen = isCompaniesAction ? showCompanies : false;
+
+              if (isKakaoInquiry && action.url) {
+                return (
+                  <a
+                    key={action.id}
+                    href={action.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`pg-subaction-card pg-subaction-card--kakao${isOpen ? " pg-subaction-card--open" : ""}`}
+                    onClick={() => handleKakaoChannelClick(action.url!)}
+                  >
+                    <span className="pg-subaction-icon">
+                      <svg width="28" height="28" viewBox="0 0 24 24">
+                        <ellipse cx="12" cy="11" rx="10" ry="8" fill="#FEE500" />
+                        <path
+                          d="M12 5.5C7.31 5.5 3.5 8.36 3.5 11.88c0 2.18 1.45 4.1 3.64 5.27l-.93 3.44 3.97-2.6c.57.08 1.15.13 1.75.13 4.69 0 8.5-2.86 8.5-6.38S16.69 5.5 12 5.5z"
+                          fill="#3C1E1E"
+                        />
+                      </svg>
+                    </span>
+                    <span className="pg-subaction-label">{action.label}</span>
+                  </a>
+                );
+              }
 
               if (action.url && !isCompaniesAction && !action.description) {
                 const target = action.url.includes("blog.naver.com")

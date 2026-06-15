@@ -345,16 +345,17 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
   {
     id: "cebu-last-day-tour",
     title: "마지막날 투어",
-    mapsQuery: "Tops Lookout Cebu City",
     mapPin: { lat: 10.3335, lng: 123.8703 },
-    mapPopupLink: {
-      url: "https://m.cafe.naver.com/cebutravelplanner/144626",
-      label: "자세히 보기",
-    },
     description:
       "세부 여행 마지막 날을 알차게 보내는 추천 코스입니다. 탑스힐 → 시라오 가든 → 레아 신전 → 아얄라몰 → 마젤란 십자가 → 산토니뇨 성당 → 산 페드로 요새 → 오이스터 베이 → 엘스파 → 공항 순서로 돌아보는 세부 마지막 날 알짜 일정입니다.",
     address: "세부 시티 전역",
     openingHours: "새벽 일찍 출발 권장 (공항 이동 고려)",
+    mapPopupLink: {
+      url: "https://m.cafe.naver.com/cebutravelplanner/144626",
+      label: "자세히 보기",
+    },
+    reservationUrl:
+      "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=last-day-tour",
     tourPins: [
       { id: "tops-hill", title: "탑스힐", lat: 10.3335, lng: 123.8703 },
       { id: "sirao-garden", title: "시라오 가든", lat: 10.4052, lng: 123.8628 },
@@ -371,9 +372,35 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
   {
     id: "cebu-city-tour",
     title: "세부 시티투어",
-    mapsQuery: "Cebu City tour",
     mapPin: { lat: 10.2942, lng: 123.9012 },
-    description: "준비 중입니다.",
+    description:
+      "세부 시티투어는 원하는 장소만 골라 가이드·기사와 함께 다니는 맞춤형 프라이빗 투어입니다. 동선과 교통까지 알아서 계획해 드리니 편하게 즐기기만 하시면 됩니다! 방문지와 소요 시간에 따라 비용이 달라지니, 가볼만한 곳·쇼핑몰 목록을 보고 원하는 곳을 정해 문의해 주세요 😊",
+    subActions: [
+      {
+        id: "city-tour-normal",
+        icon: "🗺️",
+        label: "일반\n코스",
+        url: "",
+      },
+      {
+        id: "city-tour-kids",
+        icon: "👨‍👩‍👧",
+        label: "아이와\n함께",
+        url: "",
+      },
+      {
+        id: "city-tour-photo",
+        icon: "📸",
+        label: "사진\n위주",
+        url: "",
+      },
+      {
+        id: "city-tour-inquiry",
+        icon: "kakao",
+        label: "문의하기",
+        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=city-tour",
+      },
+    ],
   },
   {
     id: "cebu-night-tour",

@@ -665,8 +665,8 @@ export default function App() {
         .pg-subaction-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 0.6rem;
-          padding: 0.75rem 0.65rem 0.75rem;
+          gap: 0.5rem;
+          padding: 0.75rem 0.65rem;
           width: 100%;
           border-top: 2px solid rgba(165, 243, 252, 0.25);
           margin-top: 0.5rem;
@@ -677,7 +677,9 @@ export default function App() {
           align-items: center;
           justify-content: center;
           gap: 0.5rem;
-          padding: 1.4rem 0.3rem;
+          aspect-ratio: 1 / 1;
+          padding: 0;
+          min-height: 0;
           border-radius: 0.75rem;
           border: 1px solid rgba(255, 255, 255, 0.15);
           background: rgba(0, 0, 0, 0.2);

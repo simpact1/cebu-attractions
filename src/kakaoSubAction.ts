@@ -5,6 +5,15 @@ export function isKakaoChannelUrl(url: string): boolean {
 }
 
 export function getReservationAction(item: CebuGuideItem) {
+  if (item.reservationUrl && isKakaoChannelUrl(item.reservationUrl)) {
+    return {
+      id: "reservation",
+      icon: "💬",
+      label: "예약하기",
+      url: item.reservationUrl,
+    };
+  }
+
   return item.subActions?.find(
     (action) => action.id.endsWith("-reservation") && isKakaoChannelUrl(action.url ?? ""),
   );
