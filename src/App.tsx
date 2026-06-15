@@ -708,11 +708,11 @@ export default function App() {
           margin: 0 0.65rem 0.65rem;
           padding: 0.85rem 1rem;
           border-radius: 0.65rem;
-          background: rgba(0, 0, 0, 0.25);
-          border: 1px solid rgba(165, 243, 252, 0.25);
+          background: rgba(0, 0, 0, 0.2);
+          border: 1px solid rgba(165, 243, 252, 0.2);
         }
         .pg-subaction-detail-text {
-          margin: 0 0 0.75rem;
+          margin: 0;
           font-size: 0.82rem;
           line-height: 1.7;
           color: rgba(165, 243, 252, 0.95);

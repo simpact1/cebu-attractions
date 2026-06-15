@@ -13,6 +13,7 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
   const [faqOpenId, setFaqOpenId] = useState<string | null>(null);
   const [showCompanies, setShowCompanies] = useState(false);
   const [companyOpenId, setCompanyOpenId] = useState<string | null>(null);
+  const [subActionOpenId, setSubActionOpenId] = useState<string | null>(null);
   const showReservationButtons =
     hasReservation(item) &&
     !item.subActions?.some((action) => !action.id.endsWith("-reservation"));
@@ -24,7 +25,10 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
     setFaqOpenId(null);
     setShowCompanies(false);
     setCompanyOpenId(null);
+    setSubActionOpenId(null);
   }, [item.id]);
+
+  const openSubAction = item.subActions?.find((action) => action.id === subActionOpenId);
 
   return (
     <div className="pg-item-detail">
@@ -45,8 +49,10 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
           <div className="pg-subaction-grid">
             {item.subActions.map((action) => {
               const isCompaniesAction = action.id === "hopping-companies";
-              const isKakaoInquiry = action.id === "city-tour-inquiry";
-              const isOpen = isCompaniesAction ? showCompanies : false;
+              const isKakaoInquiry = action.icon === "kakao";
+              const isOpen = isCompaniesAction
+                ? showCompanies
+                : subActionOpenId === action.id;
 
               if (isKakaoInquiry && action.url) {
                 return (
@@ -110,8 +116,15 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                         setCompanyOpenId(null);
                         setShowCompanies(false);
                       } else {
+                        setSubActionOpenId(null);
                         setShowCompanies(true);
                       }
+                      return;
+                    }
+                    if (action.description) {
+                      setSubActionOpenId(
+                        subActionOpenId === action.id ? null : action.id,
+                      );
                     }
                   }}
                 >
@@ -121,6 +134,11 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
               );
             })}
           </div>
+          {openSubAction?.description ? (
+            <div className="pg-subaction-detail">
+              <p className="pg-subaction-detail-text">{openSubAction.description}</p>
+            </div>
+          ) : null}
           <CompanyListPanel
             item={item}
             showCompanies={showCompanies}
