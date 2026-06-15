@@ -34,9 +34,7 @@ export function usePlaceInfo(query: string | undefined, enabled: boolean) {
     try {
       const cached = sessionStorage.getItem(cacheKey);
       if (cached) {
-        const parsed = JSON.parse(cached) as PlaceInfo;
-        console.log("Places API cache hit:", query, parsed);
-        setInfo(parsed);
+        setInfo(JSON.parse(cached) as PlaceInfo);
         setLoading(false);
         return;
       }
@@ -45,22 +43,20 @@ export function usePlaceInfo(query: string | undefined, enabled: boolean) {
     setLoading(true);
     setInfo(null);
 
-    fetch(`/api/places?query=${encodeURIComponent(query)}`)
-      .then((r) => {
-        console.log("Places API status:", r.status, "query:", query);
-        return r.json();
+    const controller = new AbortController();
+
+    fetch(`/api/places?query=${encodeURIComponent(query)}`, {
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) return null;
+        return response.json();
       })
       .then((data) => {
-        console.log("Places API response:", data);
-        if (data?.error) {
-          console.error("Places API error response:", data.error);
-          return;
-        }
-        const place = data?.places?.[0];
-        if (!place) {
-          console.log("No place found for query:", query);
-          return;
-        }
+        if (!data || data.error) return;
+
+        const place = data.places?.[0];
+        if (!place) return;
 
         const result: PlaceInfo = {
           name: place.displayName?.text,
@@ -83,8 +79,10 @@ export function usePlaceInfo(query: string | undefined, enabled: boolean) {
 
         setInfo(result);
       })
-      .catch((err) => console.error("Places API error:", err))
+      .catch(() => {})
       .finally(() => setLoading(false));
+
+    return () => controller.abort();
   }, [query, enabled]);
 
   return { info, loading };

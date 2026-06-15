@@ -43,9 +43,31 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
           <div className="pg-subaction-grid">
             {item.subActions.map((action) => {
               const isCompaniesAction = action.id === "hopping-companies";
-              const isOpen = isCompaniesAction
-                ? showCompanies
-                : false;
+              const isOpen = isCompaniesAction ? showCompanies : false;
+
+              if (action.url && !isCompaniesAction && !action.description) {
+                const target = action.url.includes("blog.naver.com")
+                  ? "_self"
+                  : "_blank";
+                return (
+                  <a
+                    key={action.id}
+                    href={action.url}
+                    target={target}
+                    rel={target === "_blank" ? "noopener noreferrer" : undefined}
+                    className={`pg-subaction-card${isOpen ? " pg-subaction-card--open" : ""}`}
+                    onClick={(event) => {
+                      if (isKakaoChannelUrl(action.url!)) {
+                        event.preventDefault();
+                        handleKakaoChannelClick(action.url!);
+                      }
+                    }}
+                  >
+                    <span className="pg-subaction-icon">{action.icon}</span>
+                    <span className="pg-subaction-label">{action.label}</span>
+                  </a>
+                );
+              }
 
               return (
                 <button
@@ -63,16 +85,6 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                       } else {
                         setShowCompanies(true);
                       }
-                      return;
-                    }
-                    if (action.description) {
-                      return;
-                    }
-                    if (action.url) {
-                      if (isKakaoChannelUrl(action.url)) {
-                        handleKakaoChannelClick(action.url);
-                      }
-                      window.open(action.url, "_blank");
                     }
                   }}
                 >
