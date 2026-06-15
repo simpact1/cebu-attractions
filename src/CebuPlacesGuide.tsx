@@ -21,6 +21,7 @@ import {
   writePersistedGuideState,
   writePlacesHashToLocation,
 } from "./placesHashDeepLink";
+import { googleMapsQueryUrl } from "./mapCoords";
 
 function activityIcon(id: string): string {
   const map: Record<string, string> = {
@@ -33,6 +34,10 @@ function activityIcon(id: string): string {
     "mactan-seawalk": "🪸",
     "mactan-parasailing": "🪂",
     "mactan-shooting": "🔫",
+    "outskirts-moalboal": "🐢",
+    "outskirts-oslob": "🦈",
+    "outskirts-canyoneering": "🏊",
+    "outskirts-camotes": "🏝️",
   };
   return map[id] ?? "⭐";
 }
@@ -81,6 +86,9 @@ function MassageShopBadges({ item }: { item: CebuGuideItem }) {
 
 function MassageItemDetail({ item }: { item: CebuGuideItem }) {
   const isKakao = item.reservationUrl?.includes("kakao.com");
+  const mapsHref =
+    item.googleMapsUrl ??
+    (item.mapsQuery ? googleMapsQueryUrl(item.mapsQuery) : undefined);
 
   return (
     <div className="pg-item-detail">
@@ -97,11 +105,11 @@ function MassageItemDetail({ item }: { item: CebuGuideItem }) {
           ) : null}
         </div>
       </div>
-      {(item.googleMapsUrl || item.mapPopupLink || item.reservationUrl) && (
+      {(mapsHref || item.mapPopupLink || item.reservationUrl) && (
         <div className="pg-action-buttons">
-          {item.googleMapsUrl ? (
+          {mapsHref ? (
             <a
-              href={item.googleMapsUrl}
+              href={mapsHref}
               target="_self"
               className="pg-action-btn pg-action-btn--detail"
             >
@@ -238,8 +246,11 @@ export function CebuPlacesGuide() {
     [visibleItems, selectedItemId],
   );
 
+  const isMactanMassage = zone.id === "mactan" && groupId === "massage";
+  const isMassageTab = groupId === "massage";
+
   const filteredMassageItems = useMemo(() => {
-    if (groupId !== "massage") return sortedItems;
+    if (!isMactanMassage) return sortedItems;
     return sortedItems.filter((item) => {
       const shop = findMassageShopForItem(item);
       if (!shop) return true;
@@ -250,17 +261,17 @@ export function CebuPlacesGuide() {
       }
       return true;
     });
-  }, [sortedItems, groupId, massageFilters]);
+  }, [sortedItems, isMactanMassage, massageFilters]);
 
-  const listItems = groupId === "massage" ? filteredMassageItems : sortedItems;
+  const listItems = isMassageTab ? filteredMassageItems : sortedItems;
 
   const selectedMassageItem = useMemo(() => {
-    if (groupId !== "massage" || !openKey) return null;
+    if (!isMassageTab || !openKey) return null;
     const match = (item: CebuGuideItem) => `${zone.id}:${groupId}:${item.id}` === openKey;
     return (
       filteredMassageItems.find(match) ?? sortedItems.find(match) ?? null
     );
-  }, [groupId, openKey, filteredMassageItems, sortedItems, zone.id]);
+  }, [isMassageTab, openKey, filteredMassageItems, sortedItems, zone.id, groupId]);
 
   const displayItems = useMemo(
     () => (zone.kind === "split" && groupId === "activities" ? visibleItems : sortedItems),
@@ -272,10 +283,10 @@ export function CebuPlacesGuide() {
       tourPinOverride ??
       (zone.kind === "split" && groupId === "activities" && !openKey
         ? []
-        : groupId === "massage"
+        : isMassageTab
           ? filteredMassageItems
           : visibleItems),
-    [tourPinOverride, zone, groupId, openKey, visibleItems, filteredMassageItems],
+    [tourPinOverride, zone, groupId, openKey, visibleItems, filteredMassageItems, isMassageTab],
   );
 
   const openActivityItem = useMemo(() => {
@@ -419,7 +430,7 @@ export function CebuPlacesGuide() {
     const key = itemOpenKey(itemId);
     const opening = openKey !== key;
     setOpenKey(opening ? key : null);
-    if (opening && zoneHasClusterMap(zone) && groupId !== "activities") {
+    if (opening && zoneHasClusterMap(zone) && groupId !== "activities" && !isMassageTab) {
       requestAnimationFrame(() => {
         document.querySelector(".pg-cluster-map")?.scrollIntoView({
           behavior: "smooth",
@@ -432,15 +443,20 @@ export function CebuPlacesGuide() {
   function focusItem(itemId: string) {
     setOpenKey(itemOpenKey(itemId));
 
+    if (groupId !== "massage") return;
+
+    const scrollToMapBottom = () => {
+      if (!clusterMapRef.current) return;
+      const mapBottom = clusterMapRef.current.getBoundingClientRect().bottom;
+      const scrollY = window.scrollY + mapBottom - window.innerHeight * 0.35;
+      window.scrollTo({
+        top: scrollY,
+        behavior: "smooth",
+      });
+    };
+
     requestAnimationFrame(() => {
-      if (clusterMapRef.current) {
-        const mapBottom = clusterMapRef.current.getBoundingClientRect().bottom;
-        const scrollY = window.scrollY + mapBottom - window.innerHeight * 0.35;
-        window.scrollTo({
-          top: scrollY,
-          behavior: "smooth",
-        });
-      }
+      requestAnimationFrame(scrollToMapBottom);
     });
   }
 
@@ -499,7 +515,7 @@ export function CebuPlacesGuide() {
           ))}
       </div>
 
-      {groupId === "massage" && (
+      {isMactanMassage && (
         <div className="mg-quick-links">
           <a
             href="https://m.blog.naver.com/aalove0902/221178736479"
@@ -561,7 +577,7 @@ export function CebuPlacesGuide() {
             </div>
           ) : null}
         </>
-      ) : groupId === "massage" ? (
+      ) : isMassageTab ? (
         <>
           {selectedMassageItem ? (
             <div className="pg-massage-selected">
@@ -576,11 +592,15 @@ export function CebuPlacesGuide() {
                   ▲
                 </span>
               </button>
-              <MassageShopBadges item={selectedMassageItem} />
+              {groupId === "massage" && zone.id === "mactan" && (() => (
+                <MassageShopBadges item={selectedMassageItem} />
+              ))()}
               <MassageItemDetail item={selectedMassageItem} />
             </div>
           ) : null}
-          <MassageFilterBar filters={massageFilters} onChange={setMassageFilters} />
+          {isMactanMassage ? (
+            <MassageFilterBar filters={massageFilters} onChange={setMassageFilters} />
+          ) : null}
           <ul className="pg-list">
             {listItems.length === 0 ? (
               <li className="pg-massage-empty muted">조건에 맞는 마사지샵이 없습니다.</li>
@@ -598,7 +618,9 @@ export function CebuPlacesGuide() {
                     {isOpen(item.id) ? "▲" : "▼"}
                   </span>
                 </button>
-                <MassageShopBadges item={item} />
+                {groupId === "massage" && zone.id === "mactan" && (() => (
+                  <MassageShopBadges item={item} />
+                ))()}
               </li>
             ))}
           </ul>

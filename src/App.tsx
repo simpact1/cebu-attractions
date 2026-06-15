@@ -664,7 +664,7 @@ export default function App() {
         }
         .pg-subaction-grid {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(auto-fit, minmax(3.5rem, 1fr));
           gap: 0.5rem;
           padding: 0.75rem 0.65rem;
           width: 100%;
