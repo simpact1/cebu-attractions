@@ -470,11 +470,9 @@ export function CebuPlacesGuide() {
   }
 
   return (
-    <section className="card card-place-guide" aria-label="세부 가볼 만한 곳">
-      <h2>세부 가볼 만한 곳</h2>
+    <section className="card card-place-guide" aria-label="세부보홀 가볼만한곳 & 액티비티">
       <p className="muted lead pg-lead">
-        <strong>세부</strong>·<strong>막탄</strong>·<strong>보홀</strong>은 가볼만한 곳·마사지·쇼핑몰 등으로 나뉘고, 같은 카테고리 장소가 지도에 모입니다.{" "}
-        <strong>세부외곽</strong>도 지도에 표시됩니다. <strong>세부영상</strong>은 네이버 블로그로 바로 연결됩니다.
+        지역과 카테고리를 선택하면 아래 목록과 지도에 함께 표시됩니다. 세부영상은 네이버 블로그(클립)로 연결됩니다.
       </p>
 
       <div className="pg-zone-row" aria-label="지역 선택 및 세부영상 블로그">

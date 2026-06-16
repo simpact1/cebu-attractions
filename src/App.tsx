@@ -5,9 +5,9 @@ export default function App() {
     <div className="app">
       <header className="hero">
         <p className="eyebrow">Philippines · Cebu</p>
-        <h1>세부 가볼 만한 곳</h1>
+        <h1>세부보홀 가볼만한곳 & 액티비티</h1>
         <p className="sub">
-          세부·막탄·세부외곽·세부영상(블로그)·보홀(가볼만한 곳·쇼핑몰)을 구분합니다.
+          세부시티·막탄·세부외곽·세부영상(블로그연동)·보홀로 구분합니다.
         </p>
       </header>
       <main className="grid">

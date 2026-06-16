@@ -1923,7 +1923,7 @@ export const CEBU_PLACES_ZONES: CebuGuideZone[] = [
   {
     kind: "split",
     id: "cebu-city",
-    title: "세부",
+    title: "세부시티",
     groups: [
       { id: "sights",     label: "가볼만한 곳", items: CEBU_CITY_SIGHTS },
       { id: "activities", label: "액티비티",    items: CEBU_CITY_ACTIVITIES },
