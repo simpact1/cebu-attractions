@@ -38,6 +38,11 @@ function activityIcon(id: string): string {
     "outskirts-oslob": "🦈",
     "outskirts-canyoneering": "🏊",
     "outskirts-camotes": "🏝️",
+    "bohol-hopping": "🚤",
+    "bohol-freediving": "🐠",
+    "bohol-firefly": "✨",
+    "bohol-land-tour": "🚐",
+    "bohol-arrival-departure": "✈️",
   };
   return map[id] ?? "⭐";
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CompanyListPanel } from "./CompanyListPanel";
+import { CompanyGroupsPanel, CompanyListPanel } from "./CompanyListPanel";
 import type { CebuGuideItem } from "./cebuPlacesData";
 import { handleKakaoChannelClick, hasReservation, isKakaoChannelUrl } from "./kakaoSubAction";
 import { ReservationActionButtons } from "./reservationActionButtons";
@@ -11,22 +11,28 @@ type GuideItemDetailProps = {
 
 export function GuideItemDetail({ item }: GuideItemDetailProps) {
   const [faqOpenId, setFaqOpenId] = useState<string | null>(null);
-  const [showCompanies, setShowCompanies] = useState(false);
+  const [showCompanies, setShowCompanies] = useState(
+    () => Boolean((item.companyList || item.companyGroups) && !item.subActions),
+  );
   const [companyOpenId, setCompanyOpenId] = useState<string | null>(null);
   const [subActionOpenId, setSubActionOpenId] = useState<string | null>(null);
   const showReservationButtons =
     hasReservation(item) &&
     !item.subActions?.some((action) => !action.id.endsWith("-reservation"));
   const fetchPlaceInfo =
-    !item.mapPopupLink && !item.subActions && Boolean(item.mapsQuery);
+    !item.mapPopupLink &&
+    !item.subActions &&
+    !item.companyList &&
+    !item.companyGroups &&
+    Boolean(item.mapsQuery);
   const { info, loading } = usePlaceInfo(item.mapsQuery, fetchPlaceInfo);
 
   useEffect(() => {
     setFaqOpenId(null);
-    setShowCompanies(false);
+    setShowCompanies(Boolean((item.companyList || item.companyGroups) && !item.subActions));
     setCompanyOpenId(null);
     setSubActionOpenId(null);
-  }, [item.id]);
+  }, [item.id, item.companyList, item.companyGroups, item.subActions]);
 
   const openSubAction = item.subActions?.find((action) => action.id === subActionOpenId);
 
@@ -146,6 +152,19 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
             onCompanyOpenIdChange={setCompanyOpenId}
           />
         </>
+      ) : item.companyGroups ? (
+        <CompanyGroupsPanel
+          item={item}
+          companyOpenId={companyOpenId}
+          onCompanyOpenIdChange={setCompanyOpenId}
+        />
+      ) : item.companyList ? (
+        <CompanyListPanel
+          item={item}
+          showCompanies
+          companyOpenId={companyOpenId}
+          onCompanyOpenIdChange={setCompanyOpenId}
+        />
       ) : null}
 
       {item.faqItems ? (
@@ -207,7 +226,7 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
               ) : null}
             </>
           ) : null}
-          {item.mapsQuery && !loading && !item.subActions ? (
+          {item.mapsQuery && !loading && !item.subActions && !item.companyList && !item.companyGroups ? (
             <p className="pg-item-actions">
               <a
                 className="pg-item-link pg-place-google-link"
@@ -223,7 +242,7 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
             </p>
           ) : null}
         </div>
-      ) : item.mapsQuery && !item.subActions ? (
+      ) : item.mapsQuery && !item.subActions && !item.companyList && !item.companyGroups ? (
         <p className="pg-item-actions">
           <a
             className="pg-item-link pg-place-google-link"

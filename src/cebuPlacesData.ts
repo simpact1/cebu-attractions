@@ -27,18 +27,24 @@ export type CebuGuideItem = {
     url?: string;
     description?: string;
   }[];
-  companyList?: {
-    id: string;
-    icon: string;
-    label: string;
-    url: string;
-    description: string;
-    recommend: string;
+  companyList?: CebuGuideCompany[];
+  companyGroups?: {
+    groupTitle: string;
+    companies: CebuGuideCompany[];
   }[];
   faqItems?: { id: string; question: string; answer: string }[];
   quality?: MassageQuality;
   zones?: MassageZone[];
   recommends?: MassageRecommend[];
+};
+
+export type CebuGuideCompany = {
+  id: string;
+  icon: string;
+  label: string;
+  url: string;
+  description: string;
+  recommend: string;
 };
 
 /** Google Places API (New) Text Search 결과 */
@@ -1599,44 +1605,127 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
 
 const BOHOL_ACTIVITIES: CebuGuideItem[] = [
   {
-    id: "bohol-island-tour",
-    title: "(보홀 투어) 보홀 아일랜드 투어",
-    mapsQuery: "Bohol island tour Chocolate Hills tarsier Loboc river",
-    mapPin: { lat: 9.8297, lng: 124.111 },
+    id: "bohol-hopping",
+    title: "호핑투어",
+    mapsQuery: "Bohol island hopping tour Panglao",
+    mapPin: { lat: 9.5434, lng: 123.7712 },
     description:
-      "세부에서 가장 인기 있는 당일 또는 1박 2일 투어 코스입니다. 초콜릿 힐 → 타르시어 보호구역 → 로복 강 크루즈 → 바클라온 성당을 하루에 돌아보는 보홀 대표 패키지입니다. 세부항에서 고속 페리로 약 2시간이며, 클룩·현지 투어사를 통해 쉽게 예약할 수 있습니다.",
+      "팡라오 섬에서 출발하는 보홀 대표 해양 액티비티입니다. 발리카삭 섬·버진 아일랜드 등을 배로 돌아보며 스노클링과 돌고래 관찰을 즐길 수 있습니다.\n\n업체마다 보트 스타일과 분위기가 다양하니 본인의 여행 스타일에 맞는 업체를 선택해서 다녀오시는 것을 추천드립니다.",
+    companyList: [
+      {
+        id: "bohol-company-hanbada",
+        icon: "🚢",
+        label: "한바다호핑",
+        url: "https://myrealt.rip/bwSbbf",
+        description:
+          "대형 요트형 보트로 진행되는 호핑투어입니다.\n선상 파티·제트스키 등 다양한 즐길거리가 포함되어 있어 활기찬 분위기를 원하는 분께 추천합니다.",
+        recommend: "🎉 신나는 분위기·그룹 여행을 원하는 분",
+      },
+      {
+        id: "bohol-company-deepree",
+        icon: "💰",
+        label: "디프리호핑",
+        url: "https://myrealt.rip/bwSh08",
+        description:
+          "합리적인 가격으로 핵심 코스만 알차게 즐기는 가성비 호핑투어입니다.\n불필요한 옵션 없이 실속 있게 다녀올 수 있습니다.",
+        recommend: "💵 가성비를 중요하게 생각하는 분",
+      },
+      {
+        id: "bohol-company-monkey",
+        icon: "👨‍👩‍👧",
+        label: "몽키호핑",
+        url: "https://myrealt.rip/bwSp7f",
+        description:
+          "가족·커플 단위에 맞춘 프라이빗 호핑투어입니다.\n소규모로 진행되어 여유롭고 편안하게 즐길 수 있습니다.",
+        recommend: "👨‍👩‍👧 가족·커플 프라이빗 투어를 원하는 분",
+      },
+      {
+        id: "bohol-company-boholtravel",
+        icon: "🧭",
+        label: "보홀트래블",
+        url: "https://myrealt.rip/bwSwa2",
+        description:
+          "현지 전문 가이드가 동행하는 보홀트래블 호핑투어입니다.\n섬과 해양 생태에 대한 자세한 설명을 들으며 알차게 즐길 수 있습니다.",
+        recommend: "🗺️ 가이드 설명과 알찬 정보를 원하는 분",
+      },
+    ],
   },
   {
-    id: "bohol-balicasag",
-    title: "(보홀 투어) 발리카삭 스노클링·다이빙",
-    mapsQuery: "Balicasag Island Bohol Philippines",
-    mapPin: { lat: 9.5142, lng: 123.6885 },
+    id: "bohol-freediving",
+    title: "나팔링투어",
+    mapsQuery: "Napaling Point Panglao Bohol",
+    mapPin: { lat: 9.5429, lng: 123.7781 },
     description:
-      "보홀 팡라오에서 배로 30분 거리의 다이빙·스노클링 성지입니다. 풍부한 산호초·다양한 열대어·바다거북으로 유명하며, 보홀 해양 액티비티의 하이라이트 코스입니다. 바람·파도에 따라 출항이 조정될 수 있습니다.",
+      "나팔링은 팡라오 동쪽의 절벽 아래 수많은 정어리 떼가 군집을 이루는 보홀 숨은 명소입니다. 스노클링으로 가볍게 구경할 수도 있고, 프리다이빙으로 더 깊이 들어가면 빛이 비치는 정어리 떼 사이로 환상적인 인생샷을 남길 수 있습니다.\n\n가볍게 스노클링 위주로 즐기고 싶다면 호핑투어를, 깊이 들어가 인생샷을 남기고 싶다면 프리다이빙을 선택해 주세요!",
+    companyGroups: [
+      {
+        groupTitle: "🚤 호핑투어로 가기",
+        companies: [
+          {
+            id: "napaling-local-page",
+            icon: "🏖️",
+            label: "로컬페이지",
+            url: "https://myrealt.rip/bwYY49",
+            description:
+              "나팔링 포인트로 가는 호핑투어 상품입니다.\n스노클링으로 가볍게 정어리 떼를 구경할 수 있습니다.",
+            recommend: "🤿 가볍게 스노클링을 즐기고 싶은 분",
+          },
+          {
+            id: "napaling-bohol-travel",
+            icon: "🧭",
+            label: "보홀트래블",
+            url: "https://myrealt.rip/bwZfff",
+            description:
+              "현지 전문 가이드가 동행하는 나팔링 호핑투어입니다.\n안전하게 스노클링을 즐길 수 있습니다.",
+            recommend: "🗺️ 가이드 동반 투어를 원하는 분",
+          },
+        ],
+      },
+      {
+        groupTitle: "🤿 프리다이빙으로 가기",
+        companies: [
+          {
+            id: "napaling-freediving",
+            icon: "🌊",
+            label: "프리다이빙",
+            url: "https://myrealt.rip/bwab40",
+            description:
+              "나팔링 포인트에서 진행하는 프리다이빙 전문 투어입니다.\n정어리 떼 사이로 인생샷을 남길 수 있습니다.",
+            recommend: "📸 인생샷·다이빙 경험을 원하는 분",
+          },
+          {
+            id: "napaling-oraborra",
+            icon: "✨",
+            label: "오라보라",
+            url: "https://myrealt.rip/bwatf4",
+            description:
+              "오라보라에서 진행하는 나팔링 프리다이빙 투어입니다.\n전문 강사와 함께 안전하게 즐길 수 있습니다.",
+            recommend: "🎯 전문 강사와 안전하게 즐기고 싶은 분",
+          },
+        ],
+      },
+    ],
   },
   {
-    id: "bohol-zipline",
-    title: "(보홀 액티비티) 초콜릿 힐 짚라인",
-    mapsQuery: "Chocolate Hills Adventure Park zipline Bohol",
-    mapPin: { lat: 9.8297, lng: 124.111 },
-    description:
-      "초콜릿 힐 위를 가로지르는 짚라인 액티비티입니다. 보홀 자연 경관을 하늘에서 내려다보며 짜릿한 스릴을 즐길 수 있어 보홀 여행 이색 액티비티로 인기 있습니다. 예약·운영 시간은 현장 기준을 확인하세요.",
-  },
-  {
-    id: "bohol-firefly-watching",
-    title: "(보홀 액티비티) 반딧불이 보트 투어",
-    mapsQuery: "firefly watching Abatan River Bohol night tour",
+    id: "bohol-firefly",
+    title: "반딧불투어",
+    mapsQuery: "Bohol firefly tour Abatan River",
     mapPin: { lat: 9.8617, lng: 124.0894 },
-    description:
-      "아바탄 강에서 진행하는 보홀 야간 반딧불이 보트 투어입니다. 수천 마리 반딧불이가 강변 나무를 수놓는 환상적인 야경을 보트 위에서 감상할 수 있습니다. 보홀 여행 특별 체험으로 강력 추천합니다.",
+    description: "준비 중입니다.",
   },
   {
-    id: "bohol-atv",
-    title: "(보홀 액티비티) ATV 투어",
-    mapsQuery: "Bohol ATV adventure tour chocolate hills",
-    mapPin: { lat: 9.82, lng: 124.1 },
-    description:
-      "보홀 농촌과 언덕을 ATV로 누비는 액티비티입니다. 초콜릿 힐 인근 시골길을 달리는 보홀 이색 체험으로, 오프로드 드라이빙을 즐기는 여행자에게 추천합니다.",
+    id: "bohol-land-tour",
+    title: "육상투어",
+    mapsQuery: "Bohol countryside land tour Chocolate Hills",
+    mapPin: { lat: 9.8297, lng: 124.111 },
+    description: "준비 중입니다.",
+  },
+  {
+    id: "bohol-arrival-departure",
+    title: "입출국\n패키지",
+    mapsQuery: "Bohol airport arrival departure package",
+    mapPin: { lat: 9.5697, lng: 123.7517 },
+    description: "준비 중입니다.",
   },
 ];
  

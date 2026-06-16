@@ -740,10 +740,22 @@ export default function App() {
         }
         .pg-company-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(4, 1fr);
           gap: 0.5rem;
           margin-bottom: 0.5rem;
           width: 100%;
+        }
+        .pg-company-group {
+          margin-bottom: 0.85rem;
+        }
+        .pg-company-group-title {
+          margin: 0 0 0.5rem;
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: #a5f3fc;
+        }
+        .pg-company-grid--2col {
+          grid-template-columns: repeat(2, 1fr);
         }
         .pg-company-card {
           display: flex;
@@ -753,10 +765,9 @@ export default function App() {
           gap: 0.5rem;
           padding: 1.2rem 0.25rem;
           border-radius: 0.65rem;
-          border: 1.5px solid rgba(255, 255, 255, 0.12);
-          background: rgba(0, 0, 0, 0.22);
+          border: 1.5px solid rgba(255,255,255,0.12);
+          background: rgba(0,0,0,0.22);
           color: #ecfeff;
-          font: inherit;
           cursor: pointer;
           transition: all 0.15s ease;
           width: 100%;
@@ -772,14 +783,14 @@ export default function App() {
           border-color: rgba(110, 231, 183, 0.8);
         }
         .pg-company-icon {
-          font-size: clamp(2rem, 7vw, 2.8rem);
+          font-size: clamp(2rem, 6.5vw, 2.6rem);
           line-height: 1;
         }
         .pg-company-label {
-          font-size: clamp(0.72rem, 2.2vw, 0.88rem);
+          font-size: clamp(0.7rem, 2vw, 0.85rem);
           font-weight: 700;
           text-align: center;
-          line-height: 1.35;
+          line-height: 1.3;
           word-break: keep-all;
           width: 100%;
         }
