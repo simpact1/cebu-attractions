@@ -512,6 +512,7 @@ const CEBU_CITY_GOLF: CebuGuideItem[] = [
     mapPin: { lat: 10.354167, lng: 123.908333 },
     description:
       "세부 시티 인근 프라이빗 성격의 골프장입니다. 세부 골프 여행지 중 역사가 깊은 곳으로 알려져 있으며, 예약·게스트 정책은 시즌별로 다를 수 있습니다. 라운딩 전 드레스 코드를 업체에 확인하세요.",
+    reservationUrl: "https://pf.kakao.com/_xcjmfj/chat",
   },
   {
     id: "alta",
@@ -521,6 +522,7 @@ const CEBU_CITY_GOLF: CebuGuideItem[] = [
     mapPopupLink: { url: "https://m.blog.naver.com/aalove0902/223747253043", label: "자세히 보기" },
     description:
       "언덕과 시티뷰가 어우러진 세부 골프장입니다. 세부 골프 여행자들에게 코스 경관이 아름답기로 유명하며, 교통·캐디·장비 렌탈 여부는 사전 문의를 권장합니다.",
+    reservationUrl: "https://pf.kakao.com/_xcjmfj/chat",
   },
   {
     id: "liloan-golf",
@@ -529,6 +531,16 @@ const CEBU_CITY_GOLF: CebuGuideItem[] = [
     mapPin: { lat: 10.432934, lng: 123.953541 },
     description:
       "릴로안에 있는 골프·레저 단지입니다. 세부 북부 골프 코스로, 시내에서 차로 이동 시간이 걸리므로 당일 일정은 넉넉히 잡는 편이 좋습니다. 예약·드레스 코드는 업체에 미리 확인하세요.",
+    reservationUrl: "https://pf.kakao.com/_xcjmfj/chat",
+  },
+  {
+    id: "club-filipino",
+    title: "클럽 필리피노",
+    mapsQuery: "Club Filipino Cebu Golf",
+    mapPin: { lat: 10.507816902651863, lng: 124.01212153834916 },
+    description:
+      "세부 북부에 위치한 골프 클럽입니다. 아름다운 자연 경관 속에서 라운딩을 즐길 수 있으며, 예약·게스트 정책은 시즌별로 다를 수 있습니다.",
+    reservationUrl: "https://pf.kakao.com/_xcjmfj/chat",
   },
 ];
  
@@ -1217,7 +1229,7 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
         id: "moalboal-inquiry",
         icon: "💬",
         label: "문의\n하기",
-        url: "https://pf.kakao.com/_xcjmfj/chat",
+        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=moalboal-inquiry",
       },
       {
         id: "moalboal-reservation",
@@ -1306,7 +1318,28 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
     title: "카모테스",
     mapsQuery: "Camotes Island Cebu",
     mapPin: { lat: 10.65, lng: 124.36 },
-    description: "준비 중입니다.",
+    description:
+      "세부 다나오항에서 페리로 약 2시간 거리에 위치한 카모테스 섬은 어메이징 케이브·티무보 케이브·산티아고 베이 등 자연 명소가 가득한 보석 같은 섬입니다. 세부 외곽 섬 여행지 중 비교적 한적하고 비용도 저렴해 인기 있는 당일 또는 1박 코스입니다.",
+    subActions: [
+      {
+        id: "camotes-detail",
+        icon: "🔍",
+        label: "투어 자세히보기",
+        url: "https://m.cafe.naver.com/cebutravelplanner/78311",
+      },
+      {
+        id: "camotes-inquiry",
+        icon: "💬",
+        label: "문의하기",
+        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=camotes-inquiry",
+      },
+      {
+        id: "camotes-reservation",
+        icon: "📅",
+        label: "예약하기",
+        url: "https://myrealt.rip/byOOaf",
+      },
+    ],
   },
 ];
  
@@ -1711,21 +1744,139 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
     title: "반딧불투어",
     mapsQuery: "Bohol firefly tour Abatan River",
     mapPin: { lat: 9.8617, lng: 124.0894 },
-    description: "준비 중입니다.",
+    description:
+      "아바탄 강에서 진행하는 보홀 야간 반딧불이 투어입니다. 해가 진 후 수천 마리의 반딧불이가 강변 나무를 환상적으로 수놓는 모습을 보트 위에서 감상할 수 있는 보홀 대표 야간 액티비티입니다.\n\n업체마다 포함 사항과 이동 수단·코스가 다르니 비교해 보시고 본인에게 맞는 업체를 선택하세요.",
+    subActions: [
+      {
+        id: "firefly-letsgo-bohol",
+        icon: "🚤",
+        label: "레츠고\n보홀",
+        url: "https://myrealt.rip/bxeVa5",
+        description:
+          "대형 보트로 진행되는 레츠고보홀 반딧불이 투어입니다. 안정적인 보트에서 편안하게 반딧불이 군무를 감상할 수 있어 가족·단체 여행객에게 인기 있는 코스입니다.",
+      },
+      {
+        id: "firefly-bamboo-bridge",
+        icon: "🎋",
+        label: "밤부\n브릿지",
+        url: "https://myrealt.rip/bxfAd3",
+        description:
+          "노스젠 밤부브릿지 코스가 포함된 반딧불이투어입니다. 해질 무렵 맹그로브 숲을 따라 바다로 이어지는 대나무 다리를 걸어본 후, 어두워지면 보트에 탑승해 반딧불이 군무를 감상합니다. 노을부터 반딧불이까지 한번에 즐길 수 있는 코스입니다.",
+      },
+      {
+        id: "firefly-kayak",
+        icon: "🛶",
+        label: "카약",
+        url: "https://myrealt.rip/bxg49c",
+        description:
+          "아바탄 강을 직접 카약으로 저어가며 즐기는 반딧불이 투어입니다. 엔진 소음 없이 조용하게 이동하기 때문에 반딧불이를 더욱 가까이서 생생하게 감상할 수 있는 이색 코스입니다.",
+      },
+      {
+        id: "firefly-motorboat",
+        icon: "🚣",
+        label: "모터보트",
+        url: "https://myrealt.rip/bxhQ92",
+        description:
+          "모터보트를 이용해 빠르고 편안하게 이동하는 반딧불이투어입니다. 이동 시간이 짧아 효율적으로 즐길 수 있으며, 안정적인 보트에서 반딧불이 군무를 감상할 수 있습니다.",
+      },
+    ],
   },
   {
     id: "bohol-land-tour",
     title: "육상투어",
     mapsQuery: "Bohol countryside land tour Chocolate Hills",
     mapPin: { lat: 9.8297, lng: 124.111 },
-    description: "준비 중입니다.",
+    description:
+      "초콜릿 힐·타르시어 보호구역·로복 강 크루즈 등 보홀 대표 자연 명소를 하루에 돌아보는 보홀 육상투어입니다. 보홀 여행 중 가장 기본이 되는 코스로, 보홀 자연과 문화를 폭넓게 경험할 수 있습니다.\n\n저녁 시간대 반딧불이투어와 묶어서 진행하는 업체도 있으니 일정에 맞게 선택해 주세요.",
+    companyGroups: [
+      {
+        groupTitle: "🚐 육상투어만 진행",
+        companies: [
+          {
+            id: "land-tour-stein",
+            icon: "⛰️",
+            label: "스타인",
+            url: "https://myrealt.rip/byNC29",
+            description:
+              "보홀 대표 명소를 알차게 돌아보는 스타인 육상투어입니다.\n초콜릿 힐·타르시어·로복 강 크루즈 등 핵심 코스를 효율적으로 즐길 수 있습니다.",
+            recommend: "🗺️ 보홀 핵심 명소를 알차게 보고 싶은 분",
+          },
+          {
+            id: "land-tour-adventure",
+            icon: "🌿",
+            label: "보홀\n어드벤쳐",
+            url: "https://myrealt.rip/byNN10",
+            description:
+              "보홀어드벤쳐에서 진행하는 자연 친화적 육상투어입니다.\n현지 가이드와 함께 보홀의 자연을 깊이 있게 체험할 수 있습니다.",
+            recommend: "🌳 보홀 자연과 생태에 관심 있는 분",
+          },
+        ],
+      },
+      {
+        groupTitle: "🌙 육상투어 + 반딧불투어",
+        companies: [
+          {
+            id: "land-tour-local-page",
+            icon: "🏖️",
+            label: "로컬페이지",
+            url: "https://myrealt.rip/byNVb2",
+            description:
+              "낮에는 육상투어, 밤에는 반딧불이투어까지 하루에 즐기는 로컬페이지 패키지입니다.\n보홀 여행을 알차게 보내고 싶은 분께 추천합니다.",
+            recommend: "⏰ 하루를 알차게 보내고 싶은 분",
+          },
+          {
+            id: "land-tour-letsgo-bohol",
+            icon: "🚤",
+            label: "렛츠고\n보홀",
+            url: "https://myrealt.rip/byNW63",
+            description:
+              "육상투어와 반딧불이투어를 함께 진행하는 렛츠고보홀 패키지입니다.\n낮과 밤 모두 알찬 일정으로 보홀을 즐길 수 있습니다.",
+            recommend: "🌅 낮 투어와 야간 투어를 한번에 원하는 분",
+          },
+        ],
+      },
+    ],
   },
   {
     id: "bohol-arrival-departure",
-    title: "입출국\n패키지",
-    mapsQuery: "Bohol airport arrival departure package",
+    title: "입국\n패키지",
+    mapsQuery: "Bohol airport arrival package",
     mapPin: { lat: 9.5697, lng: 123.7517 },
-    description: "준비 중입니다.",
+    description:
+      "보홀 도착 비행기가 늦은 시간에 도착하는 경우가 많아, 비싼 리조트에 곧바로 체크인하면 잠만 자고 숙박비를 낭비하기 쉽습니다. 입국패키지는 상대적으로 저렴한 숙소나 마사지샵에서 하룻밤을 보내고, 다음 날 본 리조트로 이동하는 알찬 방법입니다.",
+    subActions: [
+      {
+        id: "arrival-bs-resort",
+        icon: "🏨",
+        label: "BS리조트",
+        url: "https://myrealt.rip/byO7b6",
+        description:
+          "공항 인근에 위치한 합리적인 가격의 리조트입니다. 늦은 시간 도착 후 편안하게 하룻밤을 보낼 수 있습니다.",
+      },
+      {
+        id: "arrival-kori-spa",
+        icon: "💆",
+        label: "코리스파",
+        url: "https://myrealt.rip/byO80c",
+        description:
+          "마사지와 함께 숙박을 해결할 수 있는 코리스파 입국패키지입니다. 피로를 풀고 다음 날 가벼운 몸으로 이동할 수 있습니다.",
+      },
+      {
+        id: "arrival-lamedi",
+        icon: "🛏️",
+        label: "라메디",
+        url: "https://myrealt.rip/byO967",
+        description: "가성비 좋은 라메디 입국패키지입니다. 도착 첫날 부담 없이 머물기 좋습니다.",
+      },
+      {
+        id: "arrival-leoux",
+        icon: "🌙",
+        label: "레욱스",
+        url: "https://myrealt.rip/byOAac",
+        description:
+          "편안한 휴식을 제공하는 레욱스 입국패키지입니다. 다음 날 본 리조트 이동 전 하룻밤 머물기 좋습니다.",
+      },
+    ],
   },
 ];
  

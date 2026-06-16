@@ -9,6 +9,19 @@ type GuideItemDetailProps = {
   item: CebuGuideItem;
 };
 
+function subActionLinkTarget(url: string): "_self" | "_blank" {
+  return url.includes("blog.naver.com") || url.includes("cafe.naver.com")
+    ? "_self"
+    : "_blank";
+}
+
+function openSubActionUrl(url: string): void {
+  if (isKakaoChannelUrl(url)) {
+    handleKakaoChannelClick(url);
+  }
+  window.open(url, subActionLinkTarget(url), "noopener,noreferrer");
+}
+
 export function GuideItemDetail({ item }: GuideItemDetailProps) {
   const [faqOpenId, setFaqOpenId] = useState<string | null>(null);
   const [showCompanies, setShowCompanies] = useState(
@@ -17,13 +30,15 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
   const [companyOpenId, setCompanyOpenId] = useState<string | null>(null);
   const [subActionOpenId, setSubActionOpenId] = useState<string | null>(null);
   const showReservationButtons =
-    hasReservation(item) &&
-    !item.subActions?.some((action) => !action.id.endsWith("-reservation"));
+    Boolean(item.reservationUrl) ||
+    (hasReservation(item) &&
+      !item.subActions?.some((action) => !action.id.endsWith("-reservation")));
   const fetchPlaceInfo =
     !item.mapPopupLink &&
     !item.subActions &&
     !item.companyList &&
     !item.companyGroups &&
+    !item.reservationUrl &&
     Boolean(item.mapsQuery);
   const { info, loading } = usePlaceInfo(item.mapsQuery, fetchPlaceInfo);
 
@@ -55,7 +70,8 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
           <div className="pg-subaction-grid">
             {item.subActions.map((action) => {
               const isCompaniesAction = action.id === "hopping-companies";
-              const isKakaoInquiry = action.icon === "kakao";
+              const isKakaoInquiry =
+                action.icon === "kakao" || action.id.endsWith("-inquiry");
               const isOpen = isCompaniesAction
                 ? showCompanies
                 : subActionOpenId === action.id;
@@ -71,13 +87,17 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                     onClick={() => handleKakaoChannelClick(action.url!)}
                   >
                     <span className="pg-subaction-icon">
-                      <svg width="28" height="28" viewBox="0 0 24 24">
-                        <ellipse cx="12" cy="11" rx="10" ry="8" fill="#FEE500" />
-                        <path
-                          d="M12 5.5C7.31 5.5 3.5 8.36 3.5 11.88c0 2.18 1.45 4.1 3.64 5.27l-.93 3.44 3.97-2.6c.57.08 1.15.13 1.75.13 4.69 0 8.5-2.86 8.5-6.38S16.69 5.5 12 5.5z"
-                          fill="#3C1E1E"
-                        />
-                      </svg>
+                      {action.icon === "kakao" ? (
+                        <svg width="28" height="28" viewBox="0 0 24 24">
+                          <ellipse cx="12" cy="11" rx="10" ry="8" fill="#FEE500" />
+                          <path
+                            d="M12 5.5C7.31 5.5 3.5 8.36 3.5 11.88c0 2.18 1.45 4.1 3.64 5.27l-.93 3.44 3.97-2.6c.57.08 1.15.13 1.75.13 4.69 0 8.5-2.86 8.5-6.38S16.69 5.5 12 5.5z"
+                            fill="#3C1E1E"
+                          />
+                        </svg>
+                      ) : (
+                        action.icon
+                      )}
                     </span>
                     <span className="pg-subaction-label">{action.label}</span>
                   </a>
@@ -85,9 +105,11 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
               }
 
               if (action.url && !isCompaniesAction && !action.description) {
-                const target = action.url.includes("blog.naver.com")
-                  ? "_self"
-                  : "_blank";
+                const target =
+                  action.url.includes("blog.naver.com") ||
+                  action.url.includes("cafe.naver.com")
+                    ? "_self"
+                    : "_blank";
                 return (
                   <a
                     key={action.id}
@@ -128,9 +150,14 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                       return;
                     }
                     if (action.description) {
+                      setShowCompanies(false);
                       setSubActionOpenId(
                         subActionOpenId === action.id ? null : action.id,
                       );
+                      return;
+                    }
+                    if (action.url) {
+                      openSubActionUrl(action.url);
                     }
                   }}
                 >
@@ -143,6 +170,16 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
           {openSubAction?.description ? (
             <div className="pg-subaction-detail">
               <p className="pg-subaction-detail-text">{openSubAction.description}</p>
+              {openSubAction.url ? (
+                <a
+                  href={openSubAction.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pg-subaction-detail-btn"
+                >
+                  예약하기
+                </a>
+              ) : null}
             </div>
           ) : null}
           <CompanyListPanel
@@ -226,7 +263,12 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
               ) : null}
             </>
           ) : null}
-          {item.mapsQuery && !loading && !item.subActions && !item.companyList && !item.companyGroups ? (
+          {item.mapsQuery &&
+          !loading &&
+          !item.subActions &&
+          !item.companyList &&
+          !item.companyGroups &&
+          !item.reservationUrl ? (
             <p className="pg-item-actions">
               <a
                 className="pg-item-link pg-place-google-link"
@@ -242,7 +284,11 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
             </p>
           ) : null}
         </div>
-      ) : item.mapsQuery && !item.subActions && !item.companyList && !item.companyGroups ? (
+      ) : item.mapsQuery &&
+        !item.subActions &&
+        !item.companyList &&
+        !item.companyGroups &&
+        !item.reservationUrl ? (
         <p className="pg-item-actions">
           <a
             className="pg-item-link pg-place-google-link"

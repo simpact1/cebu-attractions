@@ -664,12 +664,13 @@ export default function App() {
         }
         .pg-subaction-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(3.5rem, 1fr));
-          gap: 0.5rem;
-          padding: 0.75rem 0.65rem;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.6rem;
+          padding: 0 0.65rem 0.75rem;
           width: 100%;
           border-top: 2px solid rgba(165, 243, 252, 0.25);
           margin-top: 0.5rem;
+          padding-top: 0.75rem;
         }
         .pg-subaction-card {
           display: flex;
@@ -677,12 +678,11 @@ export default function App() {
           align-items: center;
           justify-content: center;
           gap: 0.5rem;
-          aspect-ratio: 1 / 1;
-          padding: 0;
-          min-height: 0;
-          border-radius: 0.75rem;
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          background: rgba(0, 0, 0, 0.2);
+          aspect-ratio: 1.5 / 1;
+          padding: 0.6rem 0.3rem;
+          border-radius: 0.65rem;
+          border: 1px solid rgba(255,255,255,0.15);
+          background: rgba(0,0,0,0.2);
           color: #a5f3fc;
           font: inherit;
           text-decoration: none;
@@ -704,6 +704,30 @@ export default function App() {
           border-color: rgba(165, 243, 252, 0.6);
           background: rgba(165, 243, 252, 0.1);
         }
+        .pg-subaction-card--kakao {
+          background: #F5D600;
+          color: #3A1D1D;
+          border-color: #F5D600;
+        }
+        .pg-subaction-card--kakao:hover {
+          background: #ECC900;
+          border-color: #ECC900;
+        }
+        .pg-subaction-card--kakao .pg-subaction-label {
+          color: #3A1D1D;
+        }
+        .pg-subaction-icon {
+          font-size: clamp(2rem, 7vw, 2.8rem);
+          line-height: 1;
+        }
+        .pg-subaction-label {
+          font-size: clamp(0.75rem, 2.2vw, 0.92rem);
+          font-weight: 700;
+          text-align: center;
+          line-height: 1.25;
+          word-break: keep-all;
+          width: 100%;
+        }
         .pg-subaction-detail {
           margin: 0 0.65rem 0.65rem;
           padding: 0.85rem 1rem;
@@ -723,14 +747,17 @@ export default function App() {
           text-align: center;
           padding: 0.65rem;
           border-radius: 0.55rem;
-          background: #f5d600;
-          color: #3a1d1d;
+          background: rgba(13, 148, 136, 0.35);
+          border: 1.5px solid rgba(45, 212, 191, 0.6);
+          color: #ccfbf1;
           font-size: 0.88rem;
           font-weight: 700;
           text-decoration: none;
+          margin-top: 0.65rem;
         }
         .pg-subaction-detail-btn:hover {
-          background: #ecc900;
+          background: rgba(13, 148, 136, 0.55);
+          border-color: rgba(45, 212, 191, 0.85);
         }
         .pg-company-section {
           padding: 0 0.65rem 0.65rem;
@@ -857,26 +884,13 @@ export default function App() {
           background: #d4b800;
         }
         .pg-company-btn--reserve {
-          background: rgba(56, 189, 248, 0.25);
-          border: 1.5px solid rgba(56, 189, 248, 0.5);
-          color: #e0f2fe;
+          background: rgba(13, 148, 136, 0.35);
+          border: 1.5px solid rgba(45, 212, 191, 0.6);
+          color: #ccfbf1;
         }
         .pg-company-btn--reserve:hover {
-          background: rgba(56, 189, 248, 0.38);
-          border-color: rgba(56, 189, 248, 0.7);
-        }
-        .pg-subaction-icon {
-          font-size: clamp(1.9rem, 6vw, 2.6rem);
-          line-height: 1;
-        }
-        .pg-subaction-label {
-          font-size: clamp(0.72rem, 2.2vw, 0.88rem);
-          font-weight: 600;
-          text-align: center;
-          line-height: 1.35;
-          white-space: pre-line;
-          word-break: keep-all;
-          width: 100%;
+          background: rgba(13, 148, 136, 0.55);
+          border-color: rgba(45, 212, 191, 0.85);
         }
         .pg-action-buttons {
           display: flex;

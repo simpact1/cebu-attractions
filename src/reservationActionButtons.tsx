@@ -3,7 +3,8 @@ import { getReservationAction, handleKakaoChannelClick } from "./kakaoSubAction"
 
 export function ReservationActionButtons({ item }: { item: CebuGuideItem }) {
   const reservationAction = getReservationAction(item);
-  const kakaoUrl = reservationAction?.url;
+  const reserveUrl = item.reservationUrl ?? reservationAction?.url;
+  const isKakao = reserveUrl?.includes("kakao.com");
 
   return (
     <div className="pg-action-buttons">
@@ -15,14 +16,27 @@ export function ReservationActionButtons({ item }: { item: CebuGuideItem }) {
         >
           📋 자세히 보기
         </a>
-      ) : null}
-      {kakaoUrl ? (
+      ) : (
         <a
-          href={kakaoUrl}
+          href={
+            item.googleMapsUrl ??
+            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapsQuery ?? item.title)}`
+          }
+          target="_self"
+          className="pg-action-btn pg-action-btn--detail"
+        >
+          📍 구글 지도
+        </a>
+      )}
+      {reserveUrl ? (
+        <a
+          href={reserveUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="pg-action-btn pg-action-btn--kakao"
-          onClick={() => handleKakaoChannelClick(kakaoUrl)}
+          className={`pg-action-btn ${isKakao ? "pg-action-btn--kakao" : "pg-action-btn--reserve"}`}
+          onClick={() => {
+            if (isKakao) handleKakaoChannelClick(reserveUrl);
+          }}
         >
           💬 예약하기
         </a>

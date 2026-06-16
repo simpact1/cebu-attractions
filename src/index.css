@@ -44,11 +44,16 @@ button {
 }
 
 .pg-subaction-card--kakao {
-  background-color: #FEE500 !important;
-  color: #3C1E1E !important;
+  background: #F5D600 !important;
+  color: #3A1D1D !important;
+  border-color: #F5D600 !important;
+}
+.pg-subaction-card--kakao:hover {
+  background: #ECC900 !important;
+  border-color: #ECC900 !important;
 }
 .pg-subaction-card--kakao .pg-subaction-label {
-  color: #3C1E1E !important;
+  color: #3A1D1D !important;
 }
 .pg-subaction-card--kakao .pg-subaction-icon svg {
   display: block;
