@@ -8,6 +8,7 @@ import { usePlaceInfo } from "./usePlaceInfo";
 
 type GuideItemDetailProps = {
   item: CebuGuideItem;
+  onScrollToActivityTop?: () => void;
 };
 
 function subActionLinkTarget(url: string): "_self" | "_blank" {
@@ -23,7 +24,7 @@ function openSubActionUrl(url: string): void {
   window.open(url, subActionLinkTarget(url), "noopener,noreferrer");
 }
 
-export function GuideItemDetail({ item }: GuideItemDetailProps) {
+export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetailProps) {
   const [faqOpenId, setFaqOpenId] = useState<string | null>(null);
   const [showCompanies, setShowCompanies] = useState(
     () => Boolean((item.companyList || item.companyGroups) && !item.subActions),
@@ -89,7 +90,10 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`pg-subaction-card pg-subaction-card--kakao${isOpen ? " pg-subaction-card--open" : ""}`}
-                    onClick={() => handleKakaoChannelClick(action.url!)}
+                    onClick={() => {
+                      handleKakaoChannelClick(action.url!);
+                      onScrollToActivityTop?.();
+                    }}
                   >
                     <KakaoTalkIcon />
                     <span className="pg-subaction-label">{action.label}</span>
@@ -111,6 +115,7 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                     rel={target === "_blank" ? "noopener noreferrer" : undefined}
                     className={`pg-subaction-card${isOpen ? " pg-subaction-card--open" : ""}`}
                     onClick={(event) => {
+                      onScrollToActivityTop?.();
                       if (isKakaoChannelUrl(action.url!)) {
                         event.preventDefault();
                         handleKakaoChannelClick(action.url!);
@@ -118,11 +123,33 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                     }}
                   >
                     <span
-                      className={`pg-subaction-icon${action.id === "oslob-total" ? " pg-subaction-icon--small" : ""}`}
+                      className={`pg-subaction-icon${
+                        action.id === "canyoneering-info"
+                          ? " pg-subaction-icon--smaller"
+                          : action.id === "oslob-total"
+                            ? " pg-subaction-icon--small"
+                            : ""
+                      }`}
                     >
                       {action.icon}
                     </span>
-                    <span className="pg-subaction-label">{action.label}</span>
+                    <span
+                      className={`pg-subaction-label${
+                        [
+                          "oslob-total",
+                          "oslob-mo-tour",
+                          "oslob-canyoneering-tour",
+                          "canyoneering-info",
+                        ].includes(action.id)
+                          ? " pg-subaction-label--small"
+                          : action.id === "oslob-tour" ||
+                              action.id === "oslob-canyoneering-mo-tour"
+                            ? " pg-subaction-label--smaller"
+                            : ""
+                      }`}
+                    >
+                      {action.label}
+                    </span>
                   </a>
                 );
               }
@@ -144,26 +171,52 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                         setSubActionOpenId(null);
                         setShowCompanies(true);
                       }
+                      onScrollToActivityTop?.();
                       return;
                     }
                     if (action.description) {
                       setShowCompanies(false);
-                      setSubActionOpenId(
-                        subActionOpenId === action.id ? null : action.id,
-                      );
+                      const openingDescription = subActionOpenId !== action.id;
+                      setSubActionOpenId(openingDescription ? action.id : null);
+                      if (openingDescription) {
+                        onScrollToActivityTop?.();
+                      }
                       return;
                     }
                     if (action.url) {
+                      onScrollToActivityTop?.();
                       openSubActionUrl(action.url);
                     }
                   }}
                 >
                   <span
-                    className={`pg-subaction-icon${action.id === "oslob-total" ? " pg-subaction-icon--small" : ""}`}
+                    className={`pg-subaction-icon${
+                      action.id === "canyoneering-info"
+                        ? " pg-subaction-icon--smaller"
+                        : action.id === "oslob-total"
+                          ? " pg-subaction-icon--small"
+                          : ""
+                    }`}
                   >
                     {action.icon}
                   </span>
-                  <span className="pg-subaction-label">{action.label}</span>
+                  <span
+                    className={`pg-subaction-label${
+                      [
+                        "oslob-total",
+                        "oslob-mo-tour",
+                        "oslob-canyoneering-tour",
+                        "canyoneering-info",
+                      ].includes(action.id)
+                        ? " pg-subaction-label--small"
+                        : action.id === "oslob-tour" ||
+                            action.id === "oslob-canyoneering-mo-tour"
+                          ? " pg-subaction-label--smaller"
+                          : ""
+                    }`}
+                  >
+                    {action.label}
+                  </span>
                 </button>
               );
             })}

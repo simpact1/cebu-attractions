@@ -1290,7 +1290,7 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "canyoneering-info",
         icon: "💡",
-        label: "알면좋은정보",
+        label: "알면\n좋은정보",
         url: "https://m.blog.naver.com/aalove0902/223049713127",
       },
       {
@@ -1324,7 +1324,7 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "camotes-detail",
         icon: "🔍",
-        label: "투어 자세히보기",
+        label: "자세히보기",
         url: "https://m.cafe.naver.com/cebutravelplanner/78311",
       },
       {
@@ -1746,7 +1746,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
     mapPin: { lat: 9.8617, lng: 124.0894 },
     description:
       "아바탄 강에서 진행하는 보홀 야간 반딧불이 투어입니다. 해가 진 후 수천 마리의 반딧불이가 강변 나무를 환상적으로 수놓는 모습을 보트 위에서 감상할 수 있는 보홀 대표 야간 액티비티입니다.\n\n업체마다 포함 사항과 이동 수단·코스가 다르니 비교해 보시고 본인에게 맞는 업체를 선택하세요.",
-    subActions: [
+    companyList: [
       {
         id: "firefly-letsgo-bohol",
         icon: "🚤",
@@ -1754,6 +1754,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         url: "https://myrealt.rip/bxeVa5",
         description:
           "대형 보트로 진행되는 레츠고보홀 반딧불이 투어입니다. 안정적인 보트에서 편안하게 반딧불이 군무를 감상할 수 있어 가족·단체 여행객에게 인기 있는 코스입니다.",
+        recommend: "👨‍👩‍👧 가족·단체 여행객",
       },
       {
         id: "firefly-bamboo-bridge",
@@ -1762,6 +1763,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         url: "https://myrealt.rip/bxfAd3",
         description:
           "노스젠 밤부브릿지 코스가 포함된 반딧불이투어입니다. 해질 무렵 맹그로브 숲을 따라 바다로 이어지는 대나무 다리를 걸어본 후, 어두워지면 보트에 탑승해 반딧불이 군무를 감상합니다. 노을부터 반딧불이까지 한번에 즐길 수 있는 코스입니다.",
+        recommend: "🌅 노을과 반딧불이를 함께 즐기고 싶은 분",
       },
       {
         id: "firefly-kayak",
@@ -1770,6 +1772,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         url: "https://myrealt.rip/bxg49c",
         description:
           "아바탄 강을 직접 카약으로 저어가며 즐기는 반딧불이 투어입니다. 엔진 소음 없이 조용하게 이동하기 때문에 반딧불이를 더욱 가까이서 생생하게 감상할 수 있는 이색 코스입니다.",
+        recommend: "🛶 조용하고 생생한 체험을 원하는 분",
       },
       {
         id: "firefly-motorboat",
@@ -1778,6 +1781,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         url: "https://myrealt.rip/bxhQ92",
         description:
           "모터보트를 이용해 빠르고 편안하게 이동하는 반딧불이투어입니다. 이동 시간이 짧아 효율적으로 즐길 수 있으며, 안정적인 보트에서 반딧불이 군무를 감상할 수 있습니다.",
+        recommend: "⏱️ 빠르고 편안하게 즐기고 싶은 분",
       },
     ],
   },
@@ -1844,7 +1848,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
     mapPin: { lat: 9.5697, lng: 123.7517 },
     description:
       "보홀 도착 비행기가 늦은 시간에 도착하는 경우가 많아, 비싼 리조트에 곧바로 체크인하면 잠만 자고 숙박비를 낭비하기 쉽습니다. 입국패키지는 상대적으로 저렴한 숙소나 마사지샵에서 하룻밤을 보내고, 다음 날 본 리조트로 이동하는 알찬 방법입니다.",
-    subActions: [
+    companyList: [
       {
         id: "arrival-bs-resort",
         icon: "🏨",
@@ -1852,6 +1856,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         url: "https://myrealt.rip/byO7b6",
         description:
           "공항 인근에 위치한 합리적인 가격의 리조트입니다. 늦은 시간 도착 후 편안하게 하룻밤을 보낼 수 있습니다.",
+        recommend: "✈️ 공항 인근에서 편안하게 쉬고 싶은 분",
       },
       {
         id: "arrival-kori-spa",
@@ -1860,6 +1865,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         url: "https://myrealt.rip/byO80c",
         description:
           "마사지와 함께 숙박을 해결할 수 있는 코리스파 입국패키지입니다. 피로를 풀고 다음 날 가벼운 몸으로 이동할 수 있습니다.",
+        recommend: "💆 마사지와 숙박을 함께 해결하고 싶은 분",
       },
       {
         id: "arrival-lamedi",
@@ -1867,6 +1873,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         label: "라메디",
         url: "https://myrealt.rip/byO967",
         description: "가성비 좋은 라메디 입국패키지입니다. 도착 첫날 부담 없이 머물기 좋습니다.",
+        recommend: "💵 가성비 좋은 첫날 숙소를 원하는 분",
       },
       {
         id: "arrival-leoux",
@@ -1875,6 +1882,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         url: "https://myrealt.rip/byOAac",
         description:
           "편안한 휴식을 제공하는 레욱스 입국패키지입니다. 다음 날 본 리조트 이동 전 하룻밤 머물기 좋습니다.",
+        recommend: "🌙 편안한 휴식 후 리조트로 이동하는 분",
       },
     ],
   },

@@ -186,26 +186,33 @@ export default function App() {
         .card-place-guide .pg-lead {
           margin-bottom: 0.85rem;
         }
-        .pg-zone-row,
+        .pg-zone-row {
+          display: flex;
+          flex-wrap: nowrap;
+          gap: 0.3rem;
+          margin-bottom: 0.65rem;
+          overflow-x: visible;
+        }
         .pg-group-row {
           display: flex;
           flex-wrap: wrap;
           gap: 0.4rem;
           margin-bottom: 0.65rem;
-        }
-        .pg-group-row {
           margin-top: -0.15rem;
           margin-bottom: 0.75rem;
           padding-bottom: 0.65rem;
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .pg-tab {
-          font-size: 0.82rem;
+          font-size: clamp(0.68rem, 2.3vw, 0.82rem);
           font-weight: 600;
-          padding: 0.5rem 0.85rem;
+          padding: 0.45rem 0.5rem;
           border-radius: 0.5rem;
           border-width: 2px;
           border-style: solid;
+          white-space: nowrap;
+          flex: 1;
+          text-align: center;
           transition:
             background 0.15s ease,
             border-color 0.15s ease,
@@ -347,8 +354,8 @@ export default function App() {
         .mg-quick-links {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 0.5rem;
-          margin-bottom: 0.75rem;
+          gap: 0.4rem;
+          margin-bottom: 0.65rem;
           width: 100%;
         }
         .mg-quick-card {
@@ -356,35 +363,37 @@ export default function App() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 0.55rem;
-          padding: 1.4rem 0.3rem;
-          border-radius: 0.75rem;
-          border: 1.5px solid rgba(255, 255, 255, 0.12);
-          background: rgba(0, 0, 0, 0.22);
+          gap: 0.35rem;
+          aspect-ratio: 1 / 0.85;
+          padding: 0.3rem 0.15rem;
+          border-radius: 0.6rem;
+          border: 1.5px solid rgba(255,255,255,0.12);
+          background: rgba(0,0,0,0.22);
           color: #ecfeff;
           text-decoration: none;
           cursor: pointer;
           transition: all 0.15s ease;
-          min-width: 0;
           width: 100%;
           box-sizing: border-box;
+          overflow: hidden;
         }
         .mg-quick-card:hover {
           background: rgba(255, 255, 255, 0.08);
           border-color: rgba(165, 243, 252, 0.35);
         }
         .mg-quick-icon {
-          font-size: clamp(2rem, 7vw, 2.8rem);
+          font-size: clamp(1.6rem, 5.5vw, 2.1rem);
           line-height: 1;
         }
         .mg-quick-label {
-          font-size: clamp(0.72rem, 2.2vw, 0.88rem);
-          font-weight: 700;
+          font-size: clamp(0.6rem, 1.8vw, 0.74rem);
+          font-weight: 600;
           text-align: center;
-          line-height: 1.35;
+          line-height: 1.2;
           white-space: pre-line;
           word-break: keep-all;
           width: 100%;
+          overflow: hidden;
         }
         .mf-section {
           margin-bottom: 0.65rem;
@@ -682,7 +691,8 @@ export default function App() {
         }
         .pg-subaction-grid {
           display: grid;
-          gap: 0.3rem;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.5rem;
           padding: 0 0.65rem 0.65rem;
           width: 100%;
           border-top: 2px solid rgba(165, 243, 252, 0.25);
@@ -696,7 +706,7 @@ export default function App() {
           align-items: center;
           justify-content: center;
           gap: 0.3rem;
-          aspect-ratio: 1 / 1;
+          aspect-ratio: 1.3 / 1;
           padding: 0.1rem;
           border-radius: 0.6rem;
           border: 1px solid rgba(255,255,255,0.15);
@@ -809,7 +819,10 @@ export default function App() {
           line-height: 1;
         }
         .pg-subaction-icon--small {
-          font-size: 0.75em;
+          font-size: 1.05em;
+        }
+        .pg-subaction-icon--smaller {
+          font-size: 1em;
         }
         .pg-subaction-icon svg {
           width: clamp(2.2rem, 8vw, 3rem);
@@ -824,6 +837,12 @@ export default function App() {
           word-break: keep-all;
           width: 100%;
           overflow: hidden;
+        }
+        .pg-subaction-label--small {
+          font-size: 0.72em;
+        }
+        .pg-subaction-label--smaller {
+          font-size: 0.62em;
         }
         .pg-subaction-detail {
           margin: 0 0.65rem 0.65rem;

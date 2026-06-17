@@ -188,6 +188,8 @@ export function CebuPlacesGuide() {
   const historyReady = useRef(false);
   const scrollRestorePending = useRef(readPersistedScrollY());
   const clusterMapRef = useRef<HTMLDivElement>(null);
+  const zoneRowRef = useRef<HTMLDivElement>(null);
+  const activityGridRef = useRef<HTMLDivElement>(null);
 
   const persistState = useCallback(
     (next: { zoneId: string; groupId: string; openKey: string | null }) => {
@@ -401,12 +403,38 @@ export function CebuPlacesGuide() {
     };
   }, [zoneId, groupId, openKey, persistState]);
 
+  function scrollToRefTop(ref: React.RefObject<HTMLDivElement | null>) {
+    requestAnimationFrame(() => {
+      if (ref.current) {
+        const top = ref.current.getBoundingClientRect().top;
+        const scrollY = window.scrollY + top - 16;
+        window.scrollTo({
+          top: scrollY,
+          behavior: "smooth",
+        });
+      }
+    });
+  }
+
+  function scrollToZoneTop() {
+    scrollToRefTop(zoneRowRef);
+  }
+
+  function scrollToActivityGridTop() {
+    scrollToRefTop(activityGridRef);
+  }
+
   function selectZone(id: string) {
     setZoneId(id);
     setOpenKey(null);
     setTourPinOverride(null);
     const z = zoneById(id);
-    setGroupId(z.groups[0]!.id);
+    if (z.kind === "split") {
+      setGroupId(z.groups[0]!.id);
+    } else {
+      setGroupId("");
+    }
+    scrollToZoneTop();
   }
 
   function itemOpenKey(itemId: string): string {
@@ -417,19 +445,17 @@ export function CebuPlacesGuide() {
     const key = itemOpenKey(item.id);
     const opening = openKey !== key;
     setOpenKey(opening ? key : null);
-    if (opening && item.tourPins) {
-      setTourPinOverride(tourPinsToGuideItems(item.tourPins));
-    } else if (opening) {
-      setTourPinOverride([item]);
+    if (opening) {
+      if (item.tourPins) {
+        setTourPinOverride(tourPinsToGuideItems(item.tourPins));
+      } else if (item.mapPin) {
+        setTourPinOverride([item]);
+      } else {
+        setTourPinOverride(null);
+      }
+      scrollToActivityGridTop();
     } else {
       setTourPinOverride(null);
-    }
-    if (opening) {
-      requestAnimationFrame(() => {
-        document
-          .querySelector(".pg-activity-detail, .pg-cluster-map")
-          ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      });
     }
   }
 
@@ -477,7 +503,7 @@ export function CebuPlacesGuide() {
         지역과 카테고리를 선택하면 아래 목록과 지도에 함께 표시됩니다. 세부영상은 네이버 블로그(클립)로 연결됩니다.
       </p>
 
-      <div className="pg-zone-row" aria-label="지역 선택 및 세부영상 블로그">
+      <div ref={zoneRowRef} className="pg-zone-row" aria-label="지역 선택 및 세부영상 블로그">
         {CEBU_PLACES_ZONES.map((z) => (
           <Fragment key={z.id}>
             {z.id === "bohol" && (
@@ -513,6 +539,7 @@ export function CebuPlacesGuide() {
                 setGroupId(g.id);
                 setOpenKey(null);
                 setTourPinOverride(null);
+                scrollToZoneTop();
               }}
             >
               {g.label}
@@ -563,6 +590,7 @@ export function CebuPlacesGuide() {
       {groupId === "activities" ? (
         <>
           <div
+            ref={activityGridRef}
             className={`pg-activity-grid${displayItems.length > 4 ? " pg-activity-grid--narrow" : ""}`}
             style={{ gridTemplateColumns: `repeat(${displayItems.length}, 1fr)` }}
           >
@@ -581,7 +609,10 @@ export function CebuPlacesGuide() {
           </div>
           {openActivityItem ? (
             <div className="pg-activity-detail">
-              <GuideItemDetail item={openActivityItem} />
+              <GuideItemDetail
+                item={openActivityItem}
+                onScrollToActivityTop={scrollToActivityGridTop}
+              />
             </div>
           ) : null}
         </>
