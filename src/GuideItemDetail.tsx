@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CompanyGroupsPanel, CompanyListPanel } from "./CompanyListPanel";
-import type { CebuGuideItem } from "./cebuPlacesData";
+import type { CebuGuideItem, CebuGuideSubAction } from "./cebuPlacesData";
 import { KakaoTalkIcon } from "./KakaoTalkIcon";
 import { handleKakaoChannelClick, hasReservation, isKakaoChannelUrl } from "./kakaoSubAction";
 import { ReservationActionButtons } from "./reservationActionButtons";
@@ -9,6 +9,7 @@ import { usePlaceInfo } from "./usePlaceInfo";
 type GuideItemDetailProps = {
   item: CebuGuideItem;
   onScrollToActivityTop?: () => void;
+  onScrollToCompanyGrid?: (ref: React.RefObject<HTMLDivElement | null>) => void;
 };
 
 function subActionLinkTarget(url: string): "_self" | "_blank" {
@@ -24,13 +25,39 @@ function openSubActionUrl(url: string): void {
   window.open(url, subActionLinkTarget(url), "noopener,noreferrer");
 }
 
-export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetailProps) {
+function subActionIconClass(actionId: string): string {
+  if (actionId === "canyoneering-info") return " pg-subaction-icon--smaller";
+  if (actionId === "oslob-total") return " pg-subaction-icon--large";
+  return "";
+}
+
+function subActionLabelClass(actionId: string): string {
+  if (["oslob-total", "oslob-tour-detail", "oslob-tour-inquiry"].includes(actionId)) {
+    return " pg-subaction-label--xlarge";
+  }
+  if (["oslob-mo-tour", "oslob-canyoneering-tour", "canyoneering-info"].includes(actionId)) {
+    return " pg-subaction-label--small";
+  }
+  if (actionId === "oslob-tour" || actionId === "oslob-canyoneering-mo-tour") {
+    return " pg-subaction-label--smaller";
+  }
+  return "";
+}
+
+export function GuideItemDetail({
+  item,
+  onScrollToActivityTop,
+  onScrollToCompanyGrid,
+}: GuideItemDetailProps) {
   const [faqOpenId, setFaqOpenId] = useState<string | null>(null);
   const [showCompanies, setShowCompanies] = useState(
     () => Boolean((item.companyList || item.companyGroups) && !item.subActions),
   );
   const [companyOpenId, setCompanyOpenId] = useState<string | null>(null);
   const [subActionOpenId, setSubActionOpenId] = useState<string | null>(null);
+  const [nestedSubActionOpenId, setNestedSubActionOpenId] = useState<string | null>(null);
+  const [openCompanyListId, setOpenCompanyListId] = useState<string | null>(null);
+  const companyGridRef = useRef<HTMLDivElement>(null);
   const showReservationButtons =
     Boolean(item.reservationUrl) ||
     (hasReservation(item) &&
@@ -49,9 +76,90 @@ export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetail
     setShowCompanies(Boolean((item.companyList || item.companyGroups) && !item.subActions));
     setCompanyOpenId(null);
     setSubActionOpenId(null);
+    setNestedSubActionOpenId(null);
+    setOpenCompanyListId(null);
   }, [item.id, item.companyList, item.companyGroups, item.subActions]);
 
+  function handleCompanyOpenIdChange(nextId: string | null) {
+    const opening = nextId !== null;
+    setCompanyOpenId(nextId);
+    if (opening) {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (onScrollToCompanyGrid) {
+            onScrollToCompanyGrid(companyGridRef);
+          } else if (companyGridRef.current) {
+            const top = companyGridRef.current.getBoundingClientRect().top;
+            const scrollY = window.scrollY + top - 16;
+            window.scrollTo({ top: scrollY, behavior: "smooth" });
+          }
+        }, 50);
+      });
+    }
+  }
+
   const openSubAction = item.subActions?.find((action) => action.id === subActionOpenId);
+  const openNestedSubAction = item.subActions?.find(
+    (action) => action.id === nestedSubActionOpenId,
+  );
+  const openCompanyListAction = item.subActions?.find(
+    (action) => action.id === openCompanyListId,
+  );
+
+  function renderNestedSubAction(action: CebuGuideSubAction) {
+    const isKakaoInquiry =
+      action.id.endsWith("-inquiry") || Boolean(action.url?.includes("kakao.com"));
+
+    if (isKakaoInquiry && action.url) {
+      return (
+        <a
+          key={action.id}
+          href={action.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="pg-subaction-card pg-subaction-card--kakao"
+          onClick={() => {
+            handleKakaoChannelClick(action.url!);
+            onScrollToActivityTop?.();
+          }}
+        >
+          <KakaoTalkIcon />
+          <span className={`pg-subaction-label${subActionLabelClass(action.id)}`}>
+            {action.label}
+          </span>
+        </a>
+      );
+    }
+
+    if (action.url) {
+      const target = subActionLinkTarget(action.url);
+      return (
+        <a
+          key={action.id}
+          href={action.url}
+          target={target}
+          rel={target === "_blank" ? "noopener noreferrer" : undefined}
+          className="pg-subaction-card"
+          onClick={(event) => {
+            onScrollToActivityTop?.();
+            if (isKakaoChannelUrl(action.url!)) {
+              event.preventDefault();
+              handleKakaoChannelClick(action.url!);
+            }
+          }}
+        >
+          <span className={`pg-subaction-icon${subActionIconClass(action.id)}`}>
+            {action.icon}
+          </span>
+          <span className={`pg-subaction-label${subActionLabelClass(action.id)}`}>
+            {action.label}
+          </span>
+        </a>
+      );
+    }
+
+    return null;
+  }
 
   return (
     <div className="pg-item-detail">
@@ -75,12 +183,18 @@ export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetail
           >
             {item.subActions.map((action) => {
               const isCompaniesAction = action.id === "hopping-companies";
+              const hasNestedSubActions = Boolean(action.subActions?.length);
+              const hasCompanyList = Boolean(action.companyList?.length);
               const isKakaoInquiry =
                 action.id.endsWith("-inquiry") ||
                 Boolean(action.url?.includes("kakao.com"));
               const isOpen = isCompaniesAction
                 ? showCompanies
-                : subActionOpenId === action.id;
+                : hasCompanyList
+                  ? openCompanyListId === action.id
+                  : hasNestedSubActions
+                    ? nestedSubActionOpenId === action.id
+                    : subActionOpenId === action.id;
 
               if (isKakaoInquiry && action.url) {
                 return (
@@ -101,7 +215,7 @@ export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetail
                 );
               }
 
-              if (action.url && !isCompaniesAction && !action.description) {
+              if (action.url && !isCompaniesAction && !action.description && !hasCompanyList) {
                 const target =
                   action.url.includes("blog.naver.com") ||
                   action.url.includes("cafe.naver.com")
@@ -122,32 +236,10 @@ export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetail
                       }
                     }}
                   >
-                    <span
-                      className={`pg-subaction-icon${
-                        action.id === "canyoneering-info"
-                          ? " pg-subaction-icon--smaller"
-                          : action.id === "oslob-total"
-                            ? " pg-subaction-icon--small"
-                            : ""
-                      }`}
-                    >
+                    <span className={`pg-subaction-icon${subActionIconClass(action.id)}`}>
                       {action.icon}
                     </span>
-                    <span
-                      className={`pg-subaction-label${
-                        [
-                          "oslob-total",
-                          "oslob-mo-tour",
-                          "oslob-canyoneering-tour",
-                          "canyoneering-info",
-                        ].includes(action.id)
-                          ? " pg-subaction-label--small"
-                          : action.id === "oslob-tour" ||
-                              action.id === "oslob-canyoneering-mo-tour"
-                            ? " pg-subaction-label--smaller"
-                            : ""
-                      }`}
-                    >
+                    <span className={`pg-subaction-label${subActionLabelClass(action.id)}`}>
                       {action.label}
                     </span>
                   </a>
@@ -160,7 +252,11 @@ export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetail
                   type="button"
                   className={`pg-subaction-card${isOpen ? " pg-subaction-card--open" : ""}`}
                   disabled={
-                    !isCompaniesAction && !action.url && !action.description
+                    !isCompaniesAction &&
+                    !action.url &&
+                    !action.description &&
+                    !hasNestedSubActions &&
+                    !hasCompanyList
                   }
                   onClick={() => {
                     if (isCompaniesAction) {
@@ -169,13 +265,41 @@ export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetail
                         setShowCompanies(false);
                       } else {
                         setSubActionOpenId(null);
+                        setNestedSubActionOpenId(null);
+                        setOpenCompanyListId(null);
                         setShowCompanies(true);
                       }
                       onScrollToActivityTop?.();
                       return;
                     }
+                    if (hasCompanyList) {
+                      setShowCompanies(false);
+                      setSubActionOpenId(null);
+                      setNestedSubActionOpenId(null);
+                      const openingCompanyList = openCompanyListId !== action.id;
+                      setOpenCompanyListId(openingCompanyList ? action.id : null);
+                      setCompanyOpenId(null);
+                      if (openingCompanyList) {
+                        onScrollToActivityTop?.();
+                      }
+                      return;
+                    }
+                    if (hasNestedSubActions) {
+                      setShowCompanies(false);
+                      setOpenCompanyListId(null);
+                      setSubActionOpenId(null);
+                      setCompanyOpenId(null);
+                      const openingNested = nestedSubActionOpenId !== action.id;
+                      setNestedSubActionOpenId(openingNested ? action.id : null);
+                      if (openingNested) {
+                        onScrollToActivityTop?.();
+                      }
+                      return;
+                    }
                     if (action.description) {
                       setShowCompanies(false);
+                      setOpenCompanyListId(null);
+                      setNestedSubActionOpenId(null);
                       const openingDescription = subActionOpenId !== action.id;
                       setSubActionOpenId(openingDescription ? action.id : null);
                       if (openingDescription) {
@@ -189,38 +313,26 @@ export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetail
                     }
                   }}
                 >
-                  <span
-                    className={`pg-subaction-icon${
-                      action.id === "canyoneering-info"
-                        ? " pg-subaction-icon--smaller"
-                        : action.id === "oslob-total"
-                          ? " pg-subaction-icon--small"
-                          : ""
-                    }`}
-                  >
+                  <span className={`pg-subaction-icon${subActionIconClass(action.id)}`}>
                     {action.icon}
                   </span>
-                  <span
-                    className={`pg-subaction-label${
-                      [
-                        "oslob-total",
-                        "oslob-mo-tour",
-                        "oslob-canyoneering-tour",
-                        "canyoneering-info",
-                      ].includes(action.id)
-                        ? " pg-subaction-label--small"
-                        : action.id === "oslob-tour" ||
-                            action.id === "oslob-canyoneering-mo-tour"
-                          ? " pg-subaction-label--smaller"
-                          : ""
-                    }`}
-                  >
+                  <span className={`pg-subaction-label${subActionLabelClass(action.id)}`}>
                     {action.label}
                   </span>
                 </button>
               );
             })}
           </div>
+          {openNestedSubAction?.subActions ? (
+            <div
+              className="pg-subaction-grid pg-subaction-grid--nested"
+              style={{
+                gridTemplateColumns: `repeat(${openNestedSubAction.subActions.length}, 1fr)`,
+              }}
+            >
+              {openNestedSubAction.subActions.map(renderNestedSubAction)}
+            </div>
+          ) : null}
           {openSubAction?.description ? (
             <div className="pg-subaction-detail">
               <p className="pg-subaction-detail-text">{openSubAction.description}</p>
@@ -240,21 +352,32 @@ export function GuideItemDetail({ item, onScrollToActivityTop }: GuideItemDetail
             item={item}
             showCompanies={showCompanies}
             companyOpenId={companyOpenId}
-            onCompanyOpenIdChange={setCompanyOpenId}
+            onCompanyOpenIdChange={handleCompanyOpenIdChange}
+            companyGridRef={companyGridRef}
+          />
+          <CompanyListPanel
+            item={item}
+            companyList={openCompanyListAction?.companyList}
+            showCompanies={Boolean(openCompanyListId && openCompanyListAction?.companyList)}
+            companyOpenId={companyOpenId}
+            onCompanyOpenIdChange={handleCompanyOpenIdChange}
+            companyGridRef={companyGridRef}
           />
         </>
       ) : item.companyGroups ? (
         <CompanyGroupsPanel
           item={item}
           companyOpenId={companyOpenId}
-          onCompanyOpenIdChange={setCompanyOpenId}
+          onCompanyOpenIdChange={handleCompanyOpenIdChange}
+          companyGridRef={companyGridRef}
         />
       ) : item.companyList ? (
         <CompanyListPanel
           item={item}
           showCompanies
           companyOpenId={companyOpenId}
-          onCompanyOpenIdChange={setCompanyOpenId}
+          onCompanyOpenIdChange={handleCompanyOpenIdChange}
+          companyGridRef={companyGridRef}
         />
       ) : null}
 

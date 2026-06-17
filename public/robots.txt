@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cebu-places-guide.vercel.app/sitemap.xml

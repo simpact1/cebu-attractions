@@ -1,5 +1,14 @@
 import { MACTAN_MASSAGE_ITEMS } from "./mactanMassageData";
 import type { MassageQuality, MassageRecommend, MassageZone } from "./massageFilters";
+import {
+  BOHOL_FIREFLY_FAQ,
+  BOHOL_HOPPING_FAQ,
+  CANYONEERING_FAQ,
+  CITY_TOUR_FAQ,
+  MOALBOAL_FAQ,
+  NIGHT_TOUR_FAQ,
+  OSLOB_FAQ,
+} from "./tour-faqs";
  
 export { googleMapsQueryUrl, googleMapsSearchUrl } from "./mapCoords";
  
@@ -7,6 +16,25 @@ export { googleMapsQueryUrl, googleMapsSearchUrl } from "./mapCoords";
 // 타입 정의
 // ----------------------------------------------------------------
  
+export type CebuGuideCompany = {
+  id: string;
+  icon: string;
+  label: string;
+  url: string;
+  description: string;
+  recommend: string;
+};
+
+export type CebuGuideSubAction = {
+  id: string;
+  icon: string;
+  label: string;
+  url?: string;
+  description?: string;
+  subActions?: CebuGuideSubAction[];
+  companyList?: CebuGuideCompany[];
+};
+
 export type CebuGuideItem = {
   id: string;
   title: string;
@@ -20,13 +48,7 @@ export type CebuGuideItem = {
   rating?: string;       // 예: "⭐ 4.3"
   openingHours?: string;
   tourPins?: { id: string; title: string; lat: number; lng: number }[];
-  subActions?: {
-    id: string;
-    icon: string;
-    label: string;
-    url?: string;
-    description?: string;
-  }[];
+  subActions?: CebuGuideSubAction[];
   companyList?: CebuGuideCompany[];
   companyGroups?: {
     groupTitle: string;
@@ -36,15 +58,6 @@ export type CebuGuideItem = {
   quality?: MassageQuality;
   zones?: MassageZone[];
   recommends?: MassageRecommend[];
-};
-
-export type CebuGuideCompany = {
-  id: string;
-  icon: string;
-  label: string;
-  url: string;
-  description: string;
-  recommend: string;
 };
 
 /** Google Places API (New) Text Search 결과 */
@@ -413,6 +426,7 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
         url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=city-tour",
       },
     ],
+    faqItems: CITY_TOUR_FAQ,
   },
   {
     id: "cebu-night-tour",
@@ -453,6 +467,7 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
         url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=night-tour",
       },
     ],
+    faqItems: NIGHT_TOUR_FAQ,
   },
 ];
 
@@ -1238,6 +1253,7 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
         url: "https://myrealt.rip/btU37d",
       },
     ],
+    faqItems: MOALBOAL_FAQ,
   },
   {
     id: "outskirts-oslob",
@@ -1248,36 +1264,165 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
       "세부 남부에 위치한 오슬롭은 야생 고래상어를 바로 눈앞에서 만날 수 있는 세계적인 버킷리스트 명소입니다. 수밀론 아일랜드 스노클링·투말록 폭포와 함께 즐기는 남부 투어로 인기가 높습니다.\n\n📌 코스 표기 안내: 오 = 오슬롭 / 모 = 모알보알 / 캐 = 캐녀닝",
     subActions: [
       {
-        id: "oslob-total",
-        icon: "🦈",
-        label: "오슬롭\n총정리",
-        url: "https://m.blog.naver.com/aalove0902/223103304119",
-      },
-      {
         id: "oslob-tour",
         icon: "🌊",
-        label: "오슬롭투어",
+        label: "오슬롭\n투어",
         url: "",
+        subActions: [
+          {
+            id: "oslob-total",
+            icon: "🦈",
+            label: "오슬롭총정리",
+            url: "https://m.blog.naver.com/aalove0902/223103304119",
+          },
+          {
+            id: "oslob-tour-detail",
+            icon: "🔍",
+            label: "자세히보기",
+            url: "https://m.cafe.naver.com/cebutravelplanner/43536",
+          },
+          {
+            id: "oslob-tour-inquiry",
+            icon: "💬",
+            label: "문의하기",
+            url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=oslob-tour-inquiry",
+          },
+        ],
       },
       {
         id: "oslob-mo-tour",
         icon: "🐢",
-        label: "오모투어",
+        label: "오모\n투어",
         url: "",
+        companyList: [
+          {
+            id: "oslob-mo-sebulang",
+            icon: "🐳",
+            label: "세부랑",
+            url: "https://myrealt.rip/bzgd7f",
+            description:
+              "세부랑의 오슬롭+투말록+모알보알 조인 투어입니다. 한국인 가이드가 동행하고 패스트트랙이 적용되어 입장 대기 없이 빠르게 고래상어 투어를 즐길 수 있으며, 여행자보험도 무료로 포함됩니다.",
+            recommend: "🇰🇷 한국인 가이드와 빠른 입장(패스트트랙)을 원하는 분",
+          },
+          {
+            id: "oslob-mo-sechingu",
+            icon: "👫",
+            label: "세친구",
+            url: "https://myrealt.rip/bzgtb1",
+            description:
+              "세친구투어의 오모팩(오슬롭+모알보알+투말록폭포) 상품입니다. 패스트트랙과 여행자보험이 무료로 제공되어 추가 비용 부담 없이 알차게 세 코스를 둘러볼 수 있습니다.",
+            recommend: "💰 패스트트랙·보험까지 무료로 알차게 즐기고 싶은 분",
+          },
+          {
+            id: "oslob-mo-localpage",
+            icon: "🏖️",
+            label: "로컬페이지",
+            url: "https://myrealt.rip/bzh0b5",
+            description:
+              "로컬페이지의 오슬롭 고래상어 패스트트랙+모알보알 호핑 투어로, 조인 또는 단독 선택이 가능합니다. 투어 종료 후 샤워와 점심까지 제공되어 편의성이 높습니다.",
+            recommend: "🚿 샤워·점심까지 편하게 해결하고 조인/단독을 직접 선택하고 싶은 분",
+          },
+          {
+            id: "oslob-mo-treeshade",
+            icon: "🌳",
+            label: "트리쉐이드",
+            url: "https://myrealt.rip/bzh470",
+            description:
+              "트리쉐이드의 오모팩(오슬롭+모알보알) 패스트트랙 투어입니다. 무료 공항 픽업이 포함되고, 투어 후 삼겹살 파티까지 즐길 수 있어 특별한 추억을 만들 수 있습니다.",
+            recommend: "🍖 공항 픽업과 삼겹살 파티 같은 특별한 경험을 원하는 분",
+          },
+        ],
       },
       {
         id: "oslob-canyoneering-tour",
         icon: "🏊",
-        label: "오캐투어",
+        label: "오캐\n투어",
         url: "",
+        companyList: [
+          {
+            id: "oslob-canyon-sechingu",
+            icon: "👫",
+            label: "세친구",
+            url: "https://myrealt.rip/bzkHc2",
+            description:
+              "세친구투어의 오캐팩(오슬롭+캐녀닝+투말록폭포) 상품입니다. 패스트트랙과 여행자보험이 무료로 제공되어 고래상어와 캐녀닝을 한 번에 알차게 즐길 수 있습니다.",
+            recommend: "💰 패스트트랙·보험까지 무료로 알차게 즐기고 싶은 분",
+          },
+          {
+            id: "oslob-canyon-localpage",
+            icon: "🏖️",
+            label: "로컬페이지",
+            url: "https://myrealt.rip/bzkM7b",
+            description:
+              "로컬페이지의 오슬롭 고래상어 패스트트랙+캐녀닝 투어로, 조인 또는 단독 선택이 가능합니다. 베이스캠프 휴식 공간과 샤워, 점심까지 제공되어 편안하게 즐길 수 있습니다.",
+            recommend: "🚿 베이스캠프에서 편하게 쉬고 샤워·점심까지 해결하고 싶은 분",
+          },
+          {
+            id: "oslob-canyon-adventure",
+            icon: "🧗",
+            label: "세부어드벤쳐",
+            url: "https://myrealt.rip/bzkR62",
+            description:
+              "오슬롭+투말록+캐녀닝 풀코스를 단독으로 진행하는 VIP 상품으로, 여행자보험도 포함됩니다. 프라이빗하게 풀코스를 알차게 즐기고 싶은 분께 추천합니다.",
+            recommend: "👑 프라이빗 단독으로 풀코스를 여유롭게 즐기고 싶은 분",
+          },
+          {
+            id: "oslob-canyon-sebulang",
+            icon: "🐳",
+            label: "세부랑",
+            url: "https://myrealt.rip/bzkZe3",
+            description:
+              "세부랑의 FAST 오슬롭 고래상어+투말록폭포+가와산 캐녀닝 투어입니다. 패스트트랙이 적용되어 대기 시간을 줄이고, 여행자보험도 포함되어 안심하고 즐길 수 있습니다.",
+            recommend: "⚡ 대기 시간을 줄이고 빠르게 투어를 즐기고 싶은 분",
+          },
+        ],
       },
       {
         id: "oslob-canyoneering-mo-tour",
         icon: "🗺️",
-        label: "오캐모투어",
+        label: "오캐모\n투어",
         url: "",
+        companyList: [
+          {
+            id: "oslob-canyon-mo-stein",
+            icon: "⛰️",
+            label: "스타인",
+            url: "https://myrealt.rip/bzmjfb",
+            description:
+              "오슬롭 고래상어+캐녀닝+모알보알을 한 번에 묶은 오캐모팩입니다. 패스트트랙과 공항 픽업이 포함되며 조인·단독 모두 선택 가능해 일정에 맞게 자유롭게 고를 수 있습니다.",
+            recommend: "🗺️ 세 코스를 한 번에, 조인/단독을 직접 선택하고 싶은 분",
+          },
+          {
+            id: "oslob-canyon-mo-treeshade",
+            icon: "🌳",
+            label: "트리쉐이드",
+            url: "https://myrealt.rip/bzmv76",
+            description:
+              "트리쉐이드의 오케모팩(오슬롭+캐녀닝+모알보알 선택 가능) 패스트트랙 투어입니다. 무료 공항 픽업이 포함되어 이동 부담 없이 세 코스를 즐길 수 있습니다.",
+            recommend: "🚐 무료 공항 픽업으로 편하게 이동하고 싶은 분",
+          },
+          {
+            id: "oslob-canyon-mo-localpage",
+            icon: "🏖️",
+            label: "로컬페이지",
+            url: "https://myrealt.rip/bzms41",
+            description:
+              "로컬페이지의 오캐모팩(오슬롭 고래상어+캐녀닝+모알보알) 호핑투어로, 조인 또는 단독 선택이 가능합니다. 세 코스를 한 번에 알차게 즐기고 싶은 분께 추천합니다.",
+            recommend: "🏝️ 조인/단독을 직접 선택하며 세 코스를 모두 즐기고 싶은 분",
+          },
+          {
+            id: "oslob-canyon-mo-adventure",
+            icon: "🧗",
+            label: "세부어드벤쳐",
+            url: "https://myrealt.rip/bzmp07",
+            description:
+              "오슬롭+투말록을 기본으로 하고 모알보알·캐녀닝을 옵션으로 추가할 수 있는 패스트트랙 조인 투어입니다. 여행자보험도 포함되어 있어 원하는 코스만 골라 유연하게 구성할 수 있습니다.",
+            recommend: "🔧 기본 코스에 원하는 옵션만 골라 유연하게 구성하고 싶은 분",
+          },
+        ],
       },
     ],
+    faqItems: OSLOB_FAQ,
   },
   {
     id: "outskirts-canyoneering",
@@ -1296,8 +1441,28 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "canyoneering-tour",
         icon: "🏊",
-        label: "캐녀닝투어",
+        label: "캐녀닝\n투어",
         url: "",
+        companyList: [
+          {
+            id: "canyoneering-localpage",
+            icon: "🏖️",
+            label: "로컬페이지",
+            url: "https://myrealt.rip/bzpW15",
+            description:
+              "가와산 캐녀닝 어드벤처를 조인 또는 단독으로 진행하는 로컬페이지 투어입니다. 무제한 스윙 점프와 베이스캠프 휴식 공간이 포함되어 있고, 투어 종료 후 샤워 시설과 점심까지 한 번에 해결할 수 있어 편의성이 높습니다.",
+            recommend: "🏊 스윙 점프를 마음껏 즐기고 샤워·식사까지 편하게 해결하고 싶은 분",
+          },
+          {
+            id: "canyoneering-adventure",
+            icon: "🧗",
+            label: "세부어드벤쳐",
+            url: "https://myrealt.rip/bzpUfb",
+            description:
+              "가와산 캐녀닝 풀코스를 조인으로 진행하는 세부어드벤쳐 투어입니다. 캐녀닝 전 구간을 빠짐없이 즐길 수 있고, 짚라인을 옵션으로 추가해 협곡을 가로지르는 짜릿한 액티비티까지 함께 경험할 수 있습니다.",
+            recommend: "🌲 캐녀닝에 짚라인까지 더해 더 다양한 액티비티를 원하는 분",
+          },
+        ],
       },
       {
         id: "canyoneering-mo-tour",
@@ -1312,6 +1477,7 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
         url: "https://pf.kakao.com/_xcjmfj/chat",
       },
     ],
+    faqItems: CANYONEERING_FAQ,
   },
   {
     id: "outskirts-camotes",
@@ -1418,7 +1584,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-the-thai",
     title: "보홀 더타이스파",
-    description: "보홀 팡라오 지역의 타이 마사지 전문 스파입니다.",
+    description: "신상 스파로 픽업·드랍·공항 드랍까지 가능합니다. 전신마사지·스톤·알로에 코스를 갖추고 있어 다양한 선택이 가능합니다.",
     mapsQuery: "The Thai Spa Bohol Panglao",
     mapPin: { lat: 9.559913532635205, lng: 123.77447984145888 },
     rating: "⭐ 4.5",
@@ -1429,7 +1595,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-kori",
     title: "코리스파",
-    description: "보홀 팡라오 지역의 인기 마사지샵입니다.",
+    description: "보홀 프리미엄 마사지 패키지로 픽업·드랍이 포함되어 있습니다. 0.5박 공항픽업 마사지 패키지(첫날팩/입국팩)도 운영해 당일 예약이 가능합니다.",
     mapsQuery: "Kori Spa Panglao Bohol",
     mapPin: { lat: 9.55398056165698, lng: 123.76325268632525 },
     rating: "⭐ 4.8",
@@ -1440,7 +1606,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-kai",
     title: "카이스파",
-    description: "보홀 팡라오 지역의 마사지샵입니다.",
+    description: "알로나 비치 헤난 리조트 인근의 카이 스파입니다. 보홀에서 가장 합리적인 가격으로 예약할 수 있는 곳으로 알려져 있습니다.",
     mapsQuery: "Kai Spa Panglao Bohol",
     mapPin: { lat: 9.549494311980622, lng: 123.77396629615778 },
     rating: "⭐ 3.9",
@@ -1450,7 +1616,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-gung",
     title: "보홀 궁스파",
-    description: "보홀 팡라오 지역의 프리미엄 스파입니다.",
+    description: "알로나비치에 위치한 궁스파 1호점입니다. 코코넛오일·스톤·알로에 전신마사지 코스를 운영합니다.",
     mapsQuery: "Gung Spa Panglao Bohol",
     mapPin: { lat: 9.550489504786485, lng: 123.77078306634486 },
     rating: "⭐ 4.5",
@@ -1461,7 +1627,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-hilot",
     title: "힐롯스파",
-    description: "전통 필리핀 힐롯 마사지를 즐길 수 있는 스파입니다.",
+    description: "수영장을 보유한 힐롯스파입니다. 오일·스톤·알로에·태반 마사지까지 다양한 코스를 제공합니다.",
     mapsQuery: "Hilot Spa Panglao Bohol",
     mapPin: { lat: 9.553677970701143, lng: 123.77334692499419 },
     rating: "⭐ 4.8",
@@ -1472,7 +1638,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-helios",
     title: "더스톤 헬리오스스파",
-    description: "보홀 지역의 마사지샵입니다.",
+    description: "팡라오 리젠트파크 인근의 더스톤 헬리오스 스파입니다. 핫스톤·쿨스톤 마사지가 특징이며 픽업·드랍 서비스를 제공합니다.",
     mapsQuery: "Helios Spa Bohol",
     mapPin: { lat: 9.552379988193552, lng: 123.7737652573647 },
     rating: "⭐ 4.6",
@@ -1483,7 +1649,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-hera",
     title: "헤라스파",
-    description: "보홀 지역의 높은 평점을 자랑하는 스파입니다.",
+    description: "무료 픽업·드랍과 단독룸을 갖춘 프리미엄 스파 시설입니다. 프라이빗하게 마사지를 받고 싶은 분께 추천합니다.",
     mapsQuery: "Hera Spa Bohol",
     mapPin: { lat: 9.576876428410694, lng: 123.82099633834177 },
     rating: "⭐ 4.9",
@@ -1494,7 +1660,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-su",
     title: "수스파",
-    description: "보홀 팡라오 지역의 인기 마사지샵입니다.",
+    description: "프리미엄 수스파 마사지로, 스타일투어 코스를 함께 운영합니다.",
     mapsQuery: "Su Spa Panglao Bohol",
     mapPin: { lat: 9.555372899904334, lng: 123.76064931340204 },
     rating: "⭐ 4.8",
@@ -1505,7 +1671,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-kawa",
     title: "카와스파",
-    description: "보홀 최고 평점의 스파입니다.",
+    description: "필리핀 전통 가마솥 마사지를 경험할 수 있는 카와스파입니다. 무료 픽업·드랍 서비스를 제공합니다.",
     mapsQuery: "Kawa Spa Panglao Bohol",
     mapPin: { lat: 9.557693426018917, lng: 123.78172014474687 },
     rating: "⭐ 5.0",
@@ -1516,7 +1682,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-dodo",
     title: "도도스파",
-    description: "보홀 팡라오 지역의 마사지샵입니다.",
+    description: "픽업·드랍·샤워·짐보관까지 가능한 도도스파입니다. 전신마사지(오일·드라이·썬번·핫스톤·풋)와 임산부 마사지까지 다양한 코스를 갖추고 있습니다.",
     mapsQuery: "Dodo Spa Panglao Bohol",
     mapPin: { lat: 9.559286010635219, lng: 123.77534635368562 },
     rating: "⭐ 4.7",
@@ -1527,7 +1693,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-wi",
     title: "위스파",
-    description: "보홀 팡라오 지역의 높은 평점 스파입니다.",
+    description: "오일·스톤·태반·알로에 마사지를 제공하는 위스파(WE SPA)입니다. 픽업·드랍과 공항 이동까지 가능합니다.",
     mapsQuery: "Wi Spa Panglao Bohol",
     mapPin: { lat: 9.5528435104411, lng: 123.76417010950567 },
     rating: "⭐ 4.9",
@@ -1538,7 +1704,7 @@ const BOHOL_MASSAGE: CebuGuideItem[] = [
   {
     id: "bohol-massage-seatree",
     title: "씨트리스파",
-    description: "보홀 팡라오 아모리타 리조트 내에 위치한 고급 스파입니다.",
+    description: "보홀 아모리타 리조트 내에 위치한 고급 스파입니다. 리조트 부대시설답게 쾌적한 환경에서 마사지를 즐길 수 있습니다.",
     mapsQuery: "Sea Tree Spa Panglao Bohol",
     mapPin: { lat: 9.550143369934586, lng: 123.77728909601352 },
     rating: "⭐ 4.9",
@@ -1651,37 +1817,38 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         label: "한바다호핑",
         url: "https://myrealt.rip/bwSbbf",
         description:
-          "대형 요트형 보트로 진행되는 호핑투어입니다.\n선상 파티·제트스키 등 다양한 즐길거리가 포함되어 있어 활기찬 분위기를 원하는 분께 추천합니다.",
+          "오션카니발 콘셉트의 한바다호핑입니다. 무제한 워터슬라이드와 무료 제트스키가 포함된 가성비 최강 호핑투어로 알려져 있습니다.",
         recommend: "🎉 신나는 분위기·그룹 여행을 원하는 분",
       },
       {
-        id: "bohol-company-deepree",
-        icon: "💰",
-        label: "디프리호핑",
+        id: "bohol-company-club",
+        icon: "🎉",
+        label: "클럽세부",
         url: "https://myrealt.rip/bwSh08",
         description:
-          "합리적인 가격으로 핵심 코스만 알차게 즐기는 가성비 호핑투어입니다.\n불필요한 옵션 없이 실속 있게 다녀올 수 있습니다.",
+          "옥태견 호핑으로 알려진 클럽세부 호핑투어입니다. 사진 촬영이 포함되고 뷔페 점심과 맥주·음료가 무제한 제공되어 파티 분위기를 제대로 즐길 수 있습니다.",
         recommend: "💵 가성비를 중요하게 생각하는 분",
       },
       {
-        id: "bohol-company-monkey",
-        icon: "👨‍👩‍👧",
-        label: "몽키호핑",
+        id: "bohol-company-themark",
+        icon: "🛥️",
+        label: "더마크요트",
         url: "https://myrealt.rip/bwSp7f",
         description:
-          "가족·커플 단위에 맞춘 프라이빗 호핑투어입니다.\n소규모로 진행되어 여유롭고 편안하게 즐길 수 있습니다.",
+          "더마크크루즈 요트호핑입니다. 점심이 포함되고 자쿠지를 보유하고 있으며, 2개 섬 스노클링과 제트스키 무료 탑승까지 가능한 프리미엄 코스입니다.",
         recommend: "👨‍👩‍👧 가족·커플 프라이빗 투어를 원하는 분",
       },
       {
-        id: "bohol-company-boholtravel",
-        icon: "🧭",
-        label: "보홀트래블",
+        id: "bohol-company-pirate",
+        icon: "🏴‍☠️",
+        label: "해적호핑",
         url: "https://myrealt.rip/bwSwa2",
         description:
-          "현지 전문 가이드가 동행하는 보홀트래블 호핑투어입니다.\n섬과 해양 생태에 대한 자세한 설명을 들으며 알차게 즐길 수 있습니다.",
+          "리뉴얼 오픈한 세부 선상테마파크 해적호핑입니다. 해적선 콘셉트의 공연과 폼파티가 포함되어 있어 신나는 분위기를 원하는 분께 추천합니다.",
         recommend: "🗺️ 가이드 설명과 알찬 정보를 원하는 분",
       },
     ],
+    faqItems: BOHOL_HOPPING_FAQ,
   },
   {
     id: "bohol-freediving",
@@ -1753,7 +1920,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         label: "레츠고보홀",
         url: "https://myrealt.rip/bxeVa5",
         description:
-          "대형 보트로 진행되는 레츠고보홀 반딧불이 투어입니다. 안정적인 보트에서 편안하게 반딧불이 군무를 감상할 수 있어 가족·단체 여행객에게 인기 있는 코스입니다.",
+          "렛츠고보홀에서 진행하는 대기 없는 고품격 반딧불투어입니다. 보홀 내 최고 핫스팟 포인트로 이동하며, 픽업·드랍과 짐 보관까지 무료로 제공됩니다.",
         recommend: "👨‍👩‍👧 가족·단체 여행객",
       },
       {
@@ -1762,7 +1929,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         label: "밤부브릿지",
         url: "https://myrealt.rip/bxfAd3",
         description:
-          "노스젠 밤부브릿지 코스가 포함된 반딧불이투어입니다. 해질 무렵 맹그로브 숲을 따라 바다로 이어지는 대나무 다리를 걸어본 후, 어두워지면 보트에 탑승해 반딧불이 군무를 감상합니다. 노을부터 반딧불이까지 한번에 즐길 수 있는 코스입니다.",
+          "선셋과 밤부 브릿지, 반딧불투어를 함께 즐기는 조인 투어입니다. 노을이 질 때 출발해 대나무 다리를 건넌 후 반딧불이까지 감상하는 구성입니다.",
         recommend: "🌅 노을과 반딧불이를 함께 즐기고 싶은 분",
       },
       {
@@ -1771,7 +1938,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         label: "카약",
         url: "https://myrealt.rip/bxg49c",
         description:
-          "아바탄 강을 직접 카약으로 저어가며 즐기는 반딧불이 투어입니다. 엔진 소음 없이 조용하게 이동하기 때문에 반딧불이를 더욱 가까이서 생생하게 감상할 수 있는 이색 코스입니다.",
+          "로컬페이지의 반딧불이 카약 투어로 단독 진행이 가능하며 리조트 픽업·드랍도 제공됩니다. 직접 카약을 저으며 조용히 반딧불이를 감상할 수 있습니다.",
         recommend: "🛶 조용하고 생생한 체험을 원하는 분",
       },
       {
@@ -1780,10 +1947,11 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         label: "모터보트",
         url: "https://myrealt.rip/bxhQ92",
         description:
-          "모터보트를 이용해 빠르고 편안하게 이동하는 반딧불이투어입니다. 이동 시간이 짧아 효율적으로 즐길 수 있으며, 안정적인 보트에서 반딧불이 군무를 감상할 수 있습니다.",
+          "실속 있는 보홀 반딧불투어로 핫스팟 포인트에서 보트에 탑승해 효율적으로 반딧불이를 감상할 수 있습니다.",
         recommend: "⏱️ 빠르고 편안하게 즐기고 싶은 분",
       },
     ],
+    faqItems: BOHOL_FIREFLY_FAQ,
   },
   {
     id: "bohol-land-tour",
@@ -1855,7 +2023,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         label: "BS리조트",
         url: "https://myrealt.rip/byO7b6",
         description:
-          "공항 인근에 위치한 합리적인 가격의 리조트입니다. 늦은 시간 도착 후 편안하게 하룻밤을 보낼 수 있습니다.",
+          "보홀션의 BS리조트 입국팩·출국팩입니다. 공항 근처에 위치하고 알로나비치까지 도보 5분 거리이며, 픽업·드랍과 0.5박 숙박이 포함되어 있습니다.",
         recommend: "✈️ 공항 인근에서 편안하게 쉬고 싶은 분",
       },
       {
@@ -1864,7 +2032,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         label: "코리스파",
         url: "https://myrealt.rip/byO80c",
         description:
-          "마사지와 함께 숙박을 해결할 수 있는 코리스파 입국패키지입니다. 피로를 풀고 다음 날 가벼운 몸으로 이동할 수 있습니다.",
+          "코리스파의 0.5박 공항픽업 마사지 패키지(첫날팩·입국팩)입니다. 당일 예약이 가능해 일정이 급하게 바뀌어도 이용하기 좋습니다.",
         recommend: "💆 마사지와 숙박을 함께 해결하고 싶은 분",
       },
       {
@@ -1872,7 +2040,8 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         icon: "🛏️",
         label: "라메디",
         url: "https://myrealt.rip/byO967",
-        description: "가성비 좋은 라메디 입국패키지입니다. 도착 첫날 부담 없이 머물기 좋습니다.",
+        description:
+          "라메디리조트의 입국팩·출국팩으로 공항 픽업과 0.5박 숙박, 60분 마사지가 패키지로 포함됩니다. 키즈풀과 조식까지 제공되어 가족 여행객에게도 적합합니다.",
         recommend: "💵 가성비 좋은 첫날 숙소를 원하는 분",
       },
       {
@@ -1881,7 +2050,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
         label: "레욱스",
         url: "https://myrealt.rip/byOAac",
         description:
-          "편안한 휴식을 제공하는 레욱스 입국패키지입니다. 다음 날 본 리조트 이동 전 하룻밤 머물기 좋습니다.",
+          "렛츠고보홀에서 운영하는 레욱스 신관 입국팩·출국팩입니다. 레욱스 풀 액세스가 가능하고 공항·알로나비치 근처에서 픽업·드랍까지 포함됩니다.",
         recommend: "🌙 편안한 휴식 후 리조트로 이동하는 분",
       },
     ],

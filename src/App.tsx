@@ -706,20 +706,20 @@ export default function App() {
           align-items: center;
           justify-content: center;
           gap: 0.3rem;
-          aspect-ratio: 1.3 / 1;
-          padding: 0.1rem;
-          border-radius: 0.6rem;
-          border: 1px solid rgba(255,255,255,0.15);
-          background: rgba(0,0,0,0.2);
-          color: #a5f3fc;
+          aspect-ratio: 1 / 1.1;
+          padding: 0.25rem 0.1rem;
+          border-radius: 0.65rem;
+          border: 1.5px solid rgba(255,255,255,0.12);
+          background: rgba(0,0,0,0.22);
+          color: #ecfeff;
           font: inherit;
           text-decoration: none;
           cursor: pointer;
           transition: all 0.15s ease;
-          min-width: 0;
           width: 100%;
+          min-width: 0;
           box-sizing: border-box;
-          overflow: hidden;
+          overflow: visible;
         }
         .pg-subaction-card:hover {
           background: rgba(255,255,255,0.08);
@@ -745,8 +745,11 @@ export default function App() {
         .pg-subaction-card--kakao .pg-subaction-icon {
           position: relative;
           display: inline-flex;
-          width: 1.3em;
-          height: 1.3em;
+          align-items: center;
+          justify-content: center;
+          width: 2.4rem;
+          height: 2.4rem;
+          font-size: clamp(1.75rem, 6.5vw, 2.4rem);
           flex-shrink: 0;
         }
         .pg-action-btn--kakao .pg-subaction-icon,
@@ -815,11 +818,19 @@ export default function App() {
           box-sizing: border-box;
         }
         .pg-subaction-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          height: 2.4rem;
           font-size: clamp(2.2rem, 8vw, 3rem);
           line-height: 1;
         }
         .pg-subaction-icon--small {
           font-size: 1.05em;
+        }
+        .pg-subaction-icon--large {
+          font-size: clamp(2.2rem, 8vw, 3rem);
+          height: 2.4rem;
         }
         .pg-subaction-icon--smaller {
           font-size: 1em;
@@ -829,17 +840,21 @@ export default function App() {
           height: clamp(2.2rem, 8vw, 3rem);
         }
         .pg-subaction-label {
-          font-size: clamp(0.75rem, 2.6vw, 0.95rem);
+          font-size: clamp(0.65rem, 2.2vw, 0.82rem);
           font-weight: 700;
           text-align: center;
-          line-height: 1.1;
+          line-height: 1.15;
           white-space: pre-line;
           word-break: keep-all;
           width: 100%;
-          overflow: hidden;
         }
         .pg-subaction-label--small {
           font-size: 0.72em;
+        }
+        .pg-subaction-label--xlarge {
+          font-size: clamp(0.72rem, 2.4vw, 0.86rem);
+          font-weight: 700;
+          line-height: 1.1;
         }
         .pg-subaction-label--smaller {
           font-size: 0.62em;

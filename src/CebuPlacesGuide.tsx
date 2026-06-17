@@ -424,6 +424,21 @@ export function CebuPlacesGuide() {
     scrollToRefTop(activityGridRef);
   }
 
+  function scrollToCompanyGrid(ref: React.RefObject<HTMLDivElement | null>) {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        if (ref.current) {
+          const top = ref.current.getBoundingClientRect().top;
+          const scrollY = window.scrollY + top - 16;
+          window.scrollTo({
+            top: scrollY,
+            behavior: "smooth",
+          });
+        }
+      }, 50);
+    });
+  }
+
   function selectZone(id: string) {
     setZoneId(id);
     setOpenKey(null);
@@ -612,6 +627,7 @@ export function CebuPlacesGuide() {
               <GuideItemDetail
                 item={openActivityItem}
                 onScrollToActivityTop={scrollToActivityGridTop}
+                onScrollToCompanyGrid={scrollToCompanyGrid}
               />
             </div>
           ) : null}
@@ -679,7 +695,12 @@ export function CebuPlacesGuide() {
                   {isOpen(item.id) ? "▲" : "▼"}
                 </span>
               </button>
-              {isOpen(item.id) && <GuideItemDetail item={item} />}
+              {isOpen(item.id) && (
+                <GuideItemDetail
+                  item={item}
+                  onScrollToCompanyGrid={scrollToCompanyGrid}
+                />
+              )}
             </li>
           ))}
         </ul>
