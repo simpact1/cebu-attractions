@@ -1823,28 +1823,28 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "bohol-company-club",
         icon: "🎉",
-        label: "클럽세부",
+        label: "디프리호핑",
         url: "https://myrealt.rip/bwSh08",
         description:
-          "옥태견 호핑으로 알려진 클럽세부 호핑투어입니다. 사진 촬영이 포함되고 뷔페 점심과 맥주·음료가 무제한 제공되어 파티 분위기를 제대로 즐길 수 있습니다.",
+          "합리적인 가격으로 핵심 코스만 알차게 즐기는 가성비 호핑투어입니다. 불필요한 옵션 없이 실속 있게 다녀올 수 있습니다.",
         recommend: "💵 가성비를 중요하게 생각하는 분",
       },
       {
         id: "bohol-company-themark",
         icon: "🛥️",
-        label: "더마크요트",
+        label: "몽키호핑",
         url: "https://myrealt.rip/bwSp7f",
         description:
-          "더마크크루즈 요트호핑입니다. 점심이 포함되고 자쿠지를 보유하고 있으며, 2개 섬 스노클링과 제트스키 무료 탑승까지 가능한 프리미엄 코스입니다.",
+          "가족·커플 단위에 맞춘 프라이빗 호핑투어입니다. 소규모로 진행되어 여유롭고 편안하게 즐길 수 있습니다.",
         recommend: "👨‍👩‍👧 가족·커플 프라이빗 투어를 원하는 분",
       },
       {
         id: "bohol-company-pirate",
-        icon: "🏴‍☠️",
-        label: "해적호핑",
+        icon: "🧭",
+        label: "보홀트래블",
         url: "https://myrealt.rip/bwSwa2",
         description:
-          "리뉴얼 오픈한 세부 선상테마파크 해적호핑입니다. 해적선 콘셉트의 공연과 폼파티가 포함되어 있어 신나는 분위기를 원하는 분께 추천합니다.",
+          "현지 전문 가이드가 동행하는 보홀트래블 호핑투어입니다. 섬과 해양 생태에 대한 자세한 설명을 들으며 알차게 즐길 수 있습니다.",
         recommend: "🗺️ 가이드 설명과 알찬 정보를 원하는 분",
       },
     ],
