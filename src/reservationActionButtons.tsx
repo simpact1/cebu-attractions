@@ -1,4 +1,5 @@
 import type { CebuGuideItem } from "./cebuPlacesData";
+import { KakaoTalkIcon } from "./KakaoTalkIcon";
 import { getReservationAction, handleKakaoChannelClick } from "./kakaoSubAction";
 
 export function ReservationActionButtons({ item }: { item: CebuGuideItem }) {
@@ -38,7 +39,8 @@ export function ReservationActionButtons({ item }: { item: CebuGuideItem }) {
             if (isKakao) handleKakaoChannelClick(reserveUrl);
           }}
         >
-          💬 예약하기
+          {isKakao ? <KakaoTalkIcon /> : null}
+          예약하기
         </a>
       ) : null}
     </div>

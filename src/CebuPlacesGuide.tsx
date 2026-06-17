@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { KakaoTalkIcon } from "./KakaoTalkIcon";
 import { CebuClusterMap } from "./CebuClusterMap";
 import { GuideItemDetail } from "./GuideItemDetail";
 import { MassageFilterBar } from "./MassageFilterBar";
@@ -137,7 +138,8 @@ function MassageItemDetail({ item }: { item: CebuGuideItem }) {
               rel="noopener noreferrer"
               className={`pg-action-btn ${isKakao ? "pg-action-btn--kakao" : "pg-action-btn--reserve"}`}
             >
-              📋 예약하기
+              {isKakao ? <KakaoTalkIcon /> : null}
+              예약하기
             </a>
           ) : null}
         </div>
@@ -560,12 +562,15 @@ export function CebuPlacesGuide() {
 
       {groupId === "activities" ? (
         <>
-          <div className="pg-activity-grid">
+          <div
+            className={`pg-activity-grid${displayItems.length > 4 ? " pg-activity-grid--narrow" : ""}`}
+            style={{ gridTemplateColumns: `repeat(${displayItems.length}, 1fr)` }}
+          >
             {displayItems.map((item) => (
               <button
                 key={item.id}
                 type="button"
-                className={`pg-activity-card ${isOpen(item.id) ? "pg-activity-card--open" : ""}`}
+                className={`pg-activity-card${displayItems.length > 4 ? " pg-activity-card--narrow" : ""} ${isOpen(item.id) ? "pg-activity-card--open" : ""}`}
                 aria-expanded={isOpen(item.id)}
                 onClick={() => toggleActivityItem(item)}
               >

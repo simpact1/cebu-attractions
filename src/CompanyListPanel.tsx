@@ -1,4 +1,5 @@
 import type { CebuGuideItem } from "./cebuPlacesData";
+import { KakaoTalkIcon } from "./KakaoTalkIcon";
 import { handleKakaoChannelClick } from "./kakaoSubAction";
 
 const SOLO_HOPPING_KAKAO_URL =
@@ -113,7 +114,8 @@ export function CompanyListPanel({
                 className="pg-company-btn pg-company-btn--kakao"
                 onClick={() => handleKakaoChannelClick(SOLO_HOPPING_KAKAO_URL)}
               >
-                💬 카톡문의
+                <KakaoTalkIcon />
+                카톡문의
               </a>
               <a
                 href={openCompany.url}

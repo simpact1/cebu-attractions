@@ -361,7 +361,7 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
       label: "자세히 보기",
     },
     reservationUrl:
-      "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=last-day-tour",
+      "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=last-day-tour",
     tourPins: [
       { id: "tops-hill", title: "탑스힐", lat: 10.3335, lng: 123.8703 },
       { id: "sirao-garden", title: "시라오 가든", lat: 10.4052, lng: 123.8628 },
@@ -385,7 +385,7 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "city-tour-normal",
         icon: "🗺️",
-        label: "일반\n코스",
+        label: "일반코스",
         url: "",
         description:
           "세부 시티투어 일반 코스는 산토니뇨 성당 & 마젤란 십자가 → 산 페드로 요새 → 탑스힐 (점심) → 시라오 가든 → 레아 신전 → 아얄라몰 또는 SM 씨사이드 쇼핑몰 → 숙소 복귀 순서로 진행됩니다.\n\n숙소 위치와 방문하고 싶은 장소에 따라 동선 순서는 유연하게 조정되니 원하시는 코스를 말씀해 주시면 최적의 일정으로 안내해 드리겠습니다.",
@@ -393,7 +393,7 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "city-tour-kids",
         icon: "👨‍👩‍👧",
-        label: "아이와\n함께",
+        label: "아이와함께",
         url: "",
         description:
           "아이와 함께하는 시티투어 코스는 SM 씨사이드몰 → 비바체 아트카페 (또는 세부 오션파크) → 탑스힐 → 시라오 가든 → 레아 신전 순서로 다녀오는 것을 추천드립니다.\n\n숙소 위치와 방문하고 싶은 장소에 따라 동선 순서는 유연하게 조정되니 원하시는 코스를 말씀해 주시면 최적의 일정으로 안내해 드리겠습니다.",
@@ -401,16 +401,16 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "city-tour-photo",
         icon: "📸",
-        label: "사진\n위주",
+        label: "사진위주",
         url: "",
         description:
           "세부에서 인생샷을 남기고 싶은 분들을 위한 사진 특화 코스입니다.\n\n탑스힐 → 시라오 가든 → 리틀 교토 → 레아 신전 → 도교 사원 → 비바체 아트카페 순서로 돌아보면 다양한 분위기의 포토 스팟을 하루에 모두 담을 수 있습니다. 점심은 탑스힐 인근 식당이나 SM 씨사이드몰에서 여유롭게 즐기시길 추천드립니다.\n\n방문하고 싶은 스팟과 숙소 위치에 따라 동선은 얼마든지 조정 가능하니 원하시는 코스를 말씀해 주시면 최적의 일정으로 안내해 드리겠습니다.",
       },
       {
         id: "city-tour-inquiry",
-        icon: "kakao",
+        icon: "💬",
         label: "문의하기",
-        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=city-tour",
+        url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=city-tour",
       },
     ],
   },
@@ -425,7 +425,7 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "night-tour-regular",
         icon: "🌙",
-        label: "일반\n코스",
+        label: "일반코스",
         url: "",
         description:
           "나이트투어 일반 코스는 수그보 야시장 → 탑스힐 → 레아 신전 → 루프탑 → 카지노 → 만송이 장미 카페 순서로 진행됩니다.\n\n저녁 식사는 수그보 야시장이나 탑스힐 인근에서 즐기시길 추천드립니다.\n\n출발 시간·숙소 위치·원하시는 스팟에 따라 동선은 유연하게 조정될 수 있습니다.",
@@ -433,7 +433,7 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "night-tour-kids",
         icon: "👨‍👩‍👧",
-        label: "아이와\n함께",
+        label: "아이와함께",
         url: "",
         description:
           "아이와 함께하는 나이트투어 코스는 탑스힐 → 레아 신전 → 수그보 야시장 → 만송이 장미 카페 순서로 진행됩니다.\n\n저녁 식사는 탑스힐 인근 식당이나 수그보 야시장에서 즐기시길 추천드립니다.\n\n출발 시간·숙소 위치·원하시는 스팟에 따라 동선은 유연하게 조정됩니다.",
@@ -441,16 +441,16 @@ const CEBU_CITY_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "night-tour-photo",
         icon: "📸",
-        label: "사진\n위주",
+        label: "사진위주",
         url: "",
         description:
           "나이트투어 사진 특화 코스는 아얄라몰 → 탑스힐 → 레아 신전 → 수그보 야시장 → 루프탑 → 만송이 장미 카페 순서로 진행됩니다.\n\n저녁 식사는 아얄라몰, 탑스힐 인근 식당 또는 수그보 야시장에서 즐기시길 추천드립니다.\n\n출발 시간·숙소 위치·원하시는 스팟에 따라 동선은 유연하게 조정됩니다.",
       },
       {
         id: "night-tour-inquiry",
-        icon: "kakao",
+        icon: "💬",
         label: "문의하기",
-        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=night-tour",
+        url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=night-tour",
       },
     ],
   },
@@ -926,13 +926,13 @@ const MACTAN_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "diving-experience",
         icon: "🤿",
-        label: "체험\n다이빙",
+        label: "체험다이빙",
         url: "",
       },
       {
         id: "diving-license",
         icon: "🪪",
-        label: "라이센스\n강습",
+        label: "라이센스강습",
         url: "",
       },
       {
@@ -961,7 +961,7 @@ const MACTAN_ACTIVITIES: CebuGuideItem[] = [
         id: "seawalk-reservation",
         icon: "💬",
         label: "예약하기",
-        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=seawalk",
+        url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=seawalk",
       },
     ],
   },
@@ -981,7 +981,7 @@ const MACTAN_ACTIVITIES: CebuGuideItem[] = [
         id: "parasailing-reservation",
         icon: "💬",
         label: "예약하기",
-        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=parasailing",
+        url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=parasailing",
       },
     ],
   },
@@ -1003,7 +1003,7 @@ const MACTAN_ACTIVITIES: CebuGuideItem[] = [
         id: "shooting-reservation",
         icon: "📞",
         label: "예약하기",
-        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=shooting",
+        url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=shooting",
       },
     ],
   },
@@ -1216,25 +1216,25 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "moalboal-info",
         icon: "💡",
-        label: "알면좋은\n정보",
+        label: "알면\n좋은정보",
         url: "https://m.blog.naver.com/aalove0902/222928111302",
       },
       {
         id: "moalboal-detail",
         icon: "🔍",
-        label: "투어\n자세히보기",
+        label: "자세히\n보기",
         url: "https://m.cafe.naver.com/cebutravelplanner/143382",
       },
       {
         id: "moalboal-inquiry",
         icon: "💬",
-        label: "문의\n하기",
-        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=moalboal-inquiry",
+        label: "문의하기",
+        url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=moalboal-inquiry",
       },
       {
         id: "moalboal-reservation",
         icon: "📅",
-        label: "예약\n하기",
+        label: "예약하기",
         url: "https://myrealt.rip/btU37d",
       },
     ],
@@ -1256,25 +1256,25 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "oslob-tour",
         icon: "🌊",
-        label: "오슬롭\n투어",
+        label: "오슬롭투어",
         url: "",
       },
       {
         id: "oslob-mo-tour",
         icon: "🐢",
-        label: "오모\n투어",
+        label: "오모투어",
         url: "",
       },
       {
         id: "oslob-canyoneering-tour",
         icon: "🏊",
-        label: "오캐\n투어",
+        label: "오캐투어",
         url: "",
       },
       {
         id: "oslob-canyoneering-mo-tour",
         icon: "🗺️",
-        label: "오캐모\n투어",
+        label: "오캐모투어",
         url: "",
       },
     ],
@@ -1290,25 +1290,25 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "canyoneering-info",
         icon: "💡",
-        label: "알면좋은\n정보",
+        label: "알면좋은정보",
         url: "https://m.blog.naver.com/aalove0902/223049713127",
       },
       {
         id: "canyoneering-tour",
         icon: "🏊",
-        label: "캐녀닝\n투어",
+        label: "캐녀닝투어",
         url: "",
       },
       {
         id: "canyoneering-mo-tour",
         icon: "🗺️",
-        label: "모캐\n투어",
+        label: "모캐투어",
         url: "https://m.cafe.naver.com/cebutravelplanner/145892",
       },
       {
         id: "canyoneering-inquiry",
         icon: "💬",
-        label: "문의\n하기",
+        label: "문의하기",
         url: "https://pf.kakao.com/_xcjmfj/chat",
       },
     ],
@@ -1331,7 +1331,7 @@ const OUTSKIRTS_ACTIVITIES: CebuGuideItem[] = [
         id: "camotes-inquiry",
         icon: "💬",
         label: "문의하기",
-        url: "https://pf.kakao.com/_xoVxhjxb/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=camotes-inquiry",
+        url: "https://pf.kakao.com/_xcjmfj/chat?utm_source=cebu-places-app&utm_medium=activity&utm_campaign=camotes-inquiry",
       },
       {
         id: "camotes-reservation",
@@ -1750,7 +1750,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "firefly-letsgo-bohol",
         icon: "🚤",
-        label: "레츠고\n보홀",
+        label: "레츠고보홀",
         url: "https://myrealt.rip/bxeVa5",
         description:
           "대형 보트로 진행되는 레츠고보홀 반딧불이 투어입니다. 안정적인 보트에서 편안하게 반딧불이 군무를 감상할 수 있어 가족·단체 여행객에게 인기 있는 코스입니다.",
@@ -1758,7 +1758,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
       {
         id: "firefly-bamboo-bridge",
         icon: "🎋",
-        label: "밤부\n브릿지",
+        label: "밤부브릿지",
         url: "https://myrealt.rip/bxfAd3",
         description:
           "노스젠 밤부브릿지 코스가 포함된 반딧불이투어입니다. 해질 무렵 맹그로브 숲을 따라 바다로 이어지는 대나무 다리를 걸어본 후, 어두워지면 보트에 탑승해 반딧불이 군무를 감상합니다. 노을부터 반딧불이까지 한번에 즐길 수 있는 코스입니다.",
@@ -1804,7 +1804,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
           {
             id: "land-tour-adventure",
             icon: "🌿",
-            label: "보홀\n어드벤쳐",
+            label: "보홀어드벤쳐",
             url: "https://myrealt.rip/byNN10",
             description:
               "보홀어드벤쳐에서 진행하는 자연 친화적 육상투어입니다.\n현지 가이드와 함께 보홀의 자연을 깊이 있게 체험할 수 있습니다.",
@@ -1827,7 +1827,7 @@ const BOHOL_ACTIVITIES: CebuGuideItem[] = [
           {
             id: "land-tour-letsgo-bohol",
             icon: "🚤",
-            label: "렛츠고\n보홀",
+            label: "렛츠고보홀",
             url: "https://myrealt.rip/byNW63",
             description:
               "육상투어와 반딧불이투어를 함께 진행하는 렛츠고보홀 패키지입니다.\n낮과 밤 모두 알찬 일정으로 보홀을 즐길 수 있습니다.",

@@ -44,18 +44,11 @@ button {
 }
 
 .pg-subaction-card--kakao {
-  background: #F5D600 !important;
-  color: #3A1D1D !important;
-  border-color: #F5D600 !important;
+  background: rgba(0,0,0,0.2) !important;
+  color: #ecfeff !important;
+  border-color: rgba(255,255,255,0.15) !important;
 }
 .pg-subaction-card--kakao:hover {
-  background: #ECC900 !important;
-  border-color: #ECC900 !important;
-}
-.pg-subaction-card--kakao .pg-subaction-label {
-  color: #3A1D1D !important;
-}
-.pg-subaction-card--kakao .pg-subaction-icon svg {
-  display: block;
-  margin: 0 auto;
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(165,243,252,0.4) !important;
 }

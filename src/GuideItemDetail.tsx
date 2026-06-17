@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { CompanyGroupsPanel, CompanyListPanel } from "./CompanyListPanel";
 import type { CebuGuideItem } from "./cebuPlacesData";
+import { KakaoTalkIcon } from "./KakaoTalkIcon";
 import { handleKakaoChannelClick, hasReservation, isKakaoChannelUrl } from "./kakaoSubAction";
 import { ReservationActionButtons } from "./reservationActionButtons";
 import { usePlaceInfo } from "./usePlaceInfo";
@@ -67,11 +68,15 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
         <ReservationActionButtons item={item} />
       ) : item.subActions ? (
         <>
-          <div className="pg-subaction-grid">
+          <div
+            className="pg-subaction-grid"
+            style={{ gridTemplateColumns: `repeat(${item.subActions.length}, 1fr)` }}
+          >
             {item.subActions.map((action) => {
               const isCompaniesAction = action.id === "hopping-companies";
               const isKakaoInquiry =
-                action.icon === "kakao" || action.id.endsWith("-inquiry");
+                action.id.endsWith("-inquiry") ||
+                Boolean(action.url?.includes("kakao.com"));
               const isOpen = isCompaniesAction
                 ? showCompanies
                 : subActionOpenId === action.id;
@@ -86,19 +91,7 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                     className={`pg-subaction-card pg-subaction-card--kakao${isOpen ? " pg-subaction-card--open" : ""}`}
                     onClick={() => handleKakaoChannelClick(action.url!)}
                   >
-                    <span className="pg-subaction-icon">
-                      {action.icon === "kakao" ? (
-                        <svg width="28" height="28" viewBox="0 0 24 24">
-                          <ellipse cx="12" cy="11" rx="10" ry="8" fill="#FEE500" />
-                          <path
-                            d="M12 5.5C7.31 5.5 3.5 8.36 3.5 11.88c0 2.18 1.45 4.1 3.64 5.27l-.93 3.44 3.97-2.6c.57.08 1.15.13 1.75.13 4.69 0 8.5-2.86 8.5-6.38S16.69 5.5 12 5.5z"
-                            fill="#3C1E1E"
-                          />
-                        </svg>
-                      ) : (
-                        action.icon
-                      )}
-                    </span>
+                    <KakaoTalkIcon />
                     <span className="pg-subaction-label">{action.label}</span>
                   </a>
                 );
@@ -124,7 +117,11 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                       }
                     }}
                   >
-                    <span className="pg-subaction-icon">{action.icon}</span>
+                    <span
+                      className={`pg-subaction-icon${action.id === "oslob-total" ? " pg-subaction-icon--small" : ""}`}
+                    >
+                      {action.icon}
+                    </span>
                     <span className="pg-subaction-label">{action.label}</span>
                   </a>
                 );
@@ -161,7 +158,11 @@ export function GuideItemDetail({ item }: GuideItemDetailProps) {
                     }
                   }}
                 >
-                  <span className="pg-subaction-icon">{action.icon}</span>
+                  <span
+                    className={`pg-subaction-icon${action.id === "oslob-total" ? " pg-subaction-icon--small" : ""}`}
+                  >
+                    {action.icon}
+                  </span>
                   <span className="pg-subaction-label">{action.label}</span>
                 </button>
               );

@@ -611,10 +611,10 @@ export default function App() {
           color: rgba(165, 243, 252, 0.9);
           line-height: 1.45;
         }
+        /* 액티비티 카드 — 4개 이하: 정사각형 / 5개: --narrow 세로형 */
         .pg-activity-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-          gap: 0.5rem;
+          gap: 0.3rem;
           margin-bottom: 0.85rem;
           width: 100%;
         }
@@ -624,63 +624,81 @@ export default function App() {
           align-items: center;
           justify-content: center;
           gap: 0.4rem;
-          padding: 0.85rem 0.25rem;
+          padding: 0.6rem 0.15rem;
           border-radius: 0.75rem;
-          border: 2px solid rgba(255, 255, 255, 0.12);
-          background: rgba(0, 0, 0, 0.25);
+          border: 2px solid rgba(255,255,255,0.12);
+          background: rgba(0,0,0,0.25);
           color: #ecfeff;
           cursor: pointer;
           transition: all 0.15s ease;
-          min-width: 0;
           width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
         }
         .pg-activity-card:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.25);
+          background: rgba(255,255,255,0.08);
+          border-color: rgba(255,255,255,0.25);
         }
         .pg-activity-card--open {
           background: rgba(4, 120, 87, 0.45);
           border-color: rgba(110, 231, 183, 0.9);
-          box-shadow: 0 0 0 1px rgba(110, 231, 183, 0.4);
         }
         .pg-activity-icon {
-          font-size: clamp(1.75rem, 5vw, 2.5rem);
+          flex: 1 1 auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: clamp(1.9rem, 8vw, 2.8rem);
           line-height: 1;
-          flex-shrink: 0;
         }
         .pg-activity-name {
-          font-size: clamp(0.55rem, 2.4vw, 0.8rem);
-          font-weight: 600;
+          flex: 0 1 auto;
+          font-size: clamp(0.7rem, 2.4vw, 0.88rem);
+          font-weight: 700;
           text-align: center;
-          line-height: 1.3;
-          white-space: pre-line;
-          max-width: 100%;
-          width: 100%;
-          overflow-wrap: break-word;
+          line-height: 1.15;
           word-break: keep-all;
+          white-space: pre-line;
+          width: 100%;
+          min-height: 0;
+        }
+        .pg-activity-card--narrow {
+          aspect-ratio: unset;
+          padding: 0.5rem 0.05rem;
+          gap: 0.4rem;
+          justify-content: center;
+          align-items: center;
+        }
+        .pg-activity-card--narrow .pg-activity-icon {
+          font-size: clamp(2.1rem, 7.5vw, 2.9rem);
+          line-height: 1;
+        }
+        .pg-activity-card--narrow .pg-activity-name {
+          font-size: clamp(0.7rem, 2.3vw, 0.88rem);
+          line-height: 1.1;
         }
         .pg-activity-detail {
           margin-bottom: 0.85rem;
         }
         .pg-subaction-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 0.6rem;
-          padding: 0 0.65rem 0.75rem;
+          gap: 0.3rem;
+          padding: 0 0.65rem 0.65rem;
           width: 100%;
           border-top: 2px solid rgba(165, 243, 252, 0.25);
           margin-top: 0.5rem;
           padding-top: 0.75rem;
+          box-sizing: border-box;
         }
         .pg-subaction-card {
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 0.5rem;
-          aspect-ratio: 1.5 / 1;
-          padding: 0.6rem 0.3rem;
-          border-radius: 0.65rem;
+          gap: 0.3rem;
+          aspect-ratio: 1 / 1;
+          padding: 0.1rem;
+          border-radius: 0.6rem;
           border: 1px solid rgba(255,255,255,0.15);
           background: rgba(0,0,0,0.2);
           color: #a5f3fc;
@@ -691,10 +709,11 @@ export default function App() {
           min-width: 0;
           width: 100%;
           box-sizing: border-box;
+          overflow: hidden;
         }
         .pg-subaction-card:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(165, 243, 252, 0.4);
+          background: rgba(255,255,255,0.08);
+          border-color: rgba(165,243,252,0.35);
         }
         .pg-subaction-card:disabled {
           opacity: 0.45;
@@ -705,28 +724,106 @@ export default function App() {
           background: rgba(165, 243, 252, 0.1);
         }
         .pg-subaction-card--kakao {
-          background: #F5D600;
-          color: #3A1D1D;
-          border-color: #F5D600;
+          background: rgba(0,0,0,0.2);
+          color: #ecfeff;
+          border-color: rgba(255,255,255,0.15);
         }
         .pg-subaction-card--kakao:hover {
-          background: #ECC900;
-          border-color: #ECC900;
+          background: rgba(255,255,255,0.08);
+          border-color: rgba(165,243,252,0.4);
         }
-        .pg-subaction-card--kakao .pg-subaction-label {
+        .pg-subaction-card--kakao .pg-subaction-icon {
+          position: relative;
+          display: inline-flex;
+          width: 1.3em;
+          height: 1.3em;
+          flex-shrink: 0;
+        }
+        .pg-action-btn--kakao .pg-subaction-icon,
+        .pg-company-btn--kakao .pg-subaction-icon {
+          position: relative;
+          display: inline-flex;
+          flex-shrink: 0;
+          font-size: 1em;
+          line-height: 1;
+          vertical-align: middle;
+        }
+        .pg-action-btn .pg-subaction-icon {
+          width: 1.8em;
+          height: 1.8em;
+          margin-right: 0.4em;
+        }
+        .pg-company-btn--kakao .pg-subaction-icon {
+          width: 1.2em;
+          height: 1.2em;
+          margin-right: 0.3em;
+        }
+        .pg-subaction-card--kakao .pg-subaction-icon::before,
+        .pg-action-btn--kakao .pg-subaction-icon::before,
+        .pg-company-btn--kakao .pg-subaction-icon::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 85%;
+          background: #FEE500;
+          border-radius: 50%;
+        }
+        .pg-subaction-card--kakao .pg-subaction-icon::after,
+        .pg-action-btn--kakao .pg-subaction-icon::after,
+        .pg-company-btn--kakao .pg-subaction-icon::after {
+          content: "";
+          position: absolute;
+          bottom: 8%;
+          left: 18%;
+          width: 0;
+          height: 0;
+          border-left: 0.25em solid transparent;
+          border-right: 0.25em solid transparent;
+          border-top: 0.35em solid #FEE500;
+          transform: rotate(15deg);
+        }
+        .pg-subaction-icon-talk {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 85%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.32em;
+          font-weight: 900;
           color: #3A1D1D;
+          letter-spacing: -0.03em;
+          -webkit-text-stroke: 0.3px #3A1D1D;
+          z-index: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          padding: 0 0.1em;
+          box-sizing: border-box;
         }
         .pg-subaction-icon {
-          font-size: clamp(2rem, 7vw, 2.8rem);
+          font-size: clamp(2.2rem, 8vw, 3rem);
           line-height: 1;
         }
+        .pg-subaction-icon--small {
+          font-size: 0.75em;
+        }
+        .pg-subaction-icon svg {
+          width: clamp(2.2rem, 8vw, 3rem);
+          height: clamp(2.2rem, 8vw, 3rem);
+        }
         .pg-subaction-label {
-          font-size: clamp(0.75rem, 2.2vw, 0.92rem);
+          font-size: clamp(0.75rem, 2.6vw, 0.95rem);
           font-weight: 700;
           text-align: center;
-          line-height: 1.25;
+          line-height: 1.1;
+          white-space: pre-line;
           word-break: keep-all;
           width: 100%;
+          overflow: hidden;
         }
         .pg-subaction-detail {
           margin: 0 0.65rem 0.65rem;
@@ -875,6 +972,7 @@ export default function App() {
           flex: 1;
           width: 100%;
           box-sizing: border-box;
+          white-space: nowrap;
         }
         .pg-company-btn--kakao {
           background: #e5c800;
@@ -911,6 +1009,7 @@ export default function App() {
           text-align: center;
           cursor: pointer;
           transition: all 0.15s ease;
+          white-space: nowrap;
         }
         .pg-action-btn--detail {
           background: rgba(255, 255, 255, 0.1);
@@ -921,13 +1020,13 @@ export default function App() {
           background: rgba(255, 255, 255, 0.18);
         }
         .pg-action-btn--kakao {
-          background: #f5d600;
-          border: 1.5px solid #f5d600;
-          color: #3a1d1d;
+          background: rgba(0,0,0,0.2);
+          color: #ecfeff;
+          border: 1px solid rgba(255,255,255,0.15);
         }
         .pg-action-btn--kakao:hover {
-          background: #ecc900;
-          border-color: #ecc900;
+          background: rgba(255,255,255,0.08);
+          border-color: rgba(165,243,252,0.4);
         }
         .pg-action-btn--reserve {
           background: rgba(13, 148, 136, 0.35);
